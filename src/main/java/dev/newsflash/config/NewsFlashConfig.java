@@ -5,7 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 public record NewsFlashConfig(
     MofaConfig mofaConfig,
     P2pQuakeConfig p2pQuakeConfig,
-    FilterConfig filterConfig,
+    FilterConfig mofaFilterConfig,
     BroadcastConfig broadcastConfig
 ) {
     public static NewsFlashConfig from(FileConfiguration config) {
@@ -30,9 +30,9 @@ public record NewsFlashConfig(
                 Math.max(100, config.getInt("p2pquake.seen-history-limit", 1000))
             ),
             new FilterConfig(
-                config.getBoolean("filter.enabled", true),
-                config.getBoolean("filter.default-broadcast", false),
-                config.getStringList("filter.keywords").stream()
+                config.getBoolean("mofa.filter.enabled", config.getBoolean("filter.enabled", true)),
+                config.getBoolean("mofa.filter.default-broadcast", config.getBoolean("filter.default-broadcast", false)),
+                stringList(config, "mofa.filter.keywords", "filter.keywords").stream()
                     .map(String::trim)
                     .filter(keyword -> !keyword.isBlank())
                     .toList()
@@ -43,5 +43,13 @@ public record NewsFlashConfig(
                 config.getBoolean("broadcast.console", true)
             )
         );
+    }
+
+    private static java.util.List<String> stringList(FileConfiguration config, String path, String fallbackPath) {
+        java.util.List<String> values = config.getStringList(path);
+        if (!values.isEmpty() || config.contains(path)) {
+            return values;
+        }
+        return config.getStringList(fallbackPath);
     }
 }

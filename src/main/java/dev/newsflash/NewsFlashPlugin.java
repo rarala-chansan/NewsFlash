@@ -85,7 +85,7 @@ public final class NewsFlashPlugin extends JavaPlugin {
     private List<NewsProvider> createProviders(NewsFlashConfig config) {
         List<NewsProvider> result = new ArrayList<>();
         if (config.mofaConfig().enabled()) {
-            result.add(new MofaNewsProvider(config.mofaConfig(), config.filterConfig(), getDataFolder().toPath(), getLogger()));
+            result.add(new MofaNewsProvider(config.mofaConfig(), config.mofaFilterConfig(), getDataFolder().toPath(), getLogger()));
         }
 
         if (result.isEmpty()) {

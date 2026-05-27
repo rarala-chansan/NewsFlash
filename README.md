@@ -76,22 +76,25 @@ mofa:
 
 `suppress-initial-broadcast: true` の場合、初回取得時に既存ニュースを一気に通知せず、既読登録のみ行います。サーバー起動後に新しく追加された情報から通知されます。
 
-## 通知キーワード
+## 外務省 通知キーワード
 
-`filter.enabled` が `true` の場合、`title + lead + type` に `filter.keywords` のいずれかが含まれるニュースだけを通知します。
+`mofa.filter.enabled` が `true` の場合、外務省データの `title + lead + type` に `mofa.filter.keywords` のいずれかが含まれるニュースだけを通知します。
+
+このフィルタは外務省データ専用です。P2P地震情報には適用されません。
 
 ```yaml
-filter:
-  enabled: true
-  default-broadcast: false
-  keywords:
-    - "弾道ミサイル"
-    - "邦人"
-    - "地震"
+mofa:
+  filter:
+    enabled: true
+    default-broadcast: false
+    keywords:
+      - "ミサイル"
+      - "退避"
+      - "地震"
 ```
 
-`filter.enabled: false` にすると全件通知します。
-`filter.default-broadcast: true` にすると、キーワードに一致しないニュースも通知します。
+`mofa.filter.enabled: false` にすると外務省データを全件通知します。
+`mofa.filter.default-broadcast: true` にすると、キーワードに一致しない外務省ニュースも通知します。
 
 ## P2P地震情報
 
