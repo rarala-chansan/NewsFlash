@@ -139,7 +139,7 @@ public final class RssNewsProvider implements NewsProvider {
     private List<NewsItem> fetchFeed(RssFeedConfig feed) throws Exception {
         HttpRequest request = HttpRequest.newBuilder(URI.create(feed.url()))
             .timeout(Duration.ofSeconds(config.timeoutSeconds()))
-            .header("User-Agent", "NewsFlash Minecraft Plugin")
+            .header("User-Agent", "NewsFlashJP Minecraft Plugin")
             .GET()
             .build();
 

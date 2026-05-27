@@ -1,4 +1,4 @@
-# NewsFlash 設定
+# NewsFlashJP 設定
 
 mofa:
   # 外務省 海外安全情報オープンデータの取得を有効にします。
@@ -25,7 +25,7 @@ mofa:
   max-broadcast-per-poll: 5
 
   # 配信済みIDを保持する最大件数です。
-  # plugins/NewsFlash/mofa-seen.txt が無制限に増えるのを防ぎます。
+  # plugins/NewsFlashJP/mofa-seen.txt が無制限に増えるのを防ぎます。
   seen-history-limit: 1000
 
   filter:
@@ -111,7 +111,7 @@ rss:
   max-broadcast-per-poll: 5
 
   # 配信済みIDを保持する最大件数です。
-  # plugins/NewsFlash/rss-seen.txt が無制限に増えるのを防ぎます。
+  # plugins/NewsFlashJP/rss-seen.txt が無制限に増えるのを防ぎます。
   seen-history-limit: 1000
 
   feeds:
@@ -151,7 +151,7 @@ rss:
 
 broadcast:
   # チャット先頭に表示する接頭辞です。MiniMessage形式が使えます。
-  prefix: "<red><bold>[NewsFlash]</bold></red>"
+  prefix: "<red><bold>[NewsFlashJP]</bold></red>"
 
   # チャットに流す本文フォーマットです。MiniMessage形式が使えます。
   # 使用可能な置換: {prefix}, {source}, {type}, {title}, {lead}, {keyword}, {date}, {url}

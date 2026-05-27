@@ -98,7 +98,7 @@ public final class MofaNewsProvider implements NewsProvider {
     private List<NewsItem> fetchItems() throws Exception {
         HttpRequest request = HttpRequest.newBuilder(URI.create(config.url()))
             .timeout(Duration.ofSeconds(config.timeoutSeconds()))
-            .header("User-Agent", "NewsFlash Minecraft Plugin")
+            .header("User-Agent", "NewsFlashJP Minecraft Plugin")
             .GET()
             .build();
 

@@ -21,7 +21,7 @@ public final class NewsFlashCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0 || args[0].equalsIgnoreCase("status")) {
-            sender.sendMessage("NewsFlash providers: " + plugin.providers().size());
+            sender.sendMessage("NewsFlashJP providers: " + plugin.providers().size());
             plugin.providers().forEach(provider -> sender.sendMessage("- " + provider.name() + ": first check after " + provider.initialDelaySeconds() + " second(s), then every " + provider.pollIntervalMinutes() + " minute(s)"));
             sender.sendMessage("- P2P地震情報: " + (plugin.pluginConfig().p2pQuakeConfig().enabled() ? "enabled" : "disabled")
                 + ", earthquake min scale " + plugin.pluginConfig().p2pQuakeConfig().minScale()
@@ -38,28 +38,28 @@ public final class NewsFlashCommand implements CommandExecutor, TabCompleter {
         if (args[0].equalsIgnoreCase("reload")) {
             if (args.length == 1) {
                 plugin.reloadPlugin();
-                sender.sendMessage("NewsFlash reloaded.");
+                sender.sendMessage("NewsFlashJP reloaded.");
                 return true;
             }
             if (plugin.reloadTarget(args[1])) {
-                sender.sendMessage("NewsFlash reloaded: " + args[1]);
+                sender.sendMessage("NewsFlashJP reloaded: " + args[1]);
                 return true;
             }
-            sender.sendMessage("Unknown NewsFlash reload target: " + args[1]);
+            sender.sendMessage("Unknown NewsFlashJP reload target: " + args[1]);
             return true;
         }
 
         if (args[0].equalsIgnoreCase("check")) {
             if (args.length == 1) {
                 plugin.runManualCheck();
-                sender.sendMessage("NewsFlash check started.");
+                sender.sendMessage("NewsFlashJP check started.");
                 return true;
             }
             if (plugin.runManualCheck(args[1])) {
-                sender.sendMessage("NewsFlash check started: " + args[1]);
+                sender.sendMessage("NewsFlashJP check started: " + args[1]);
                 return true;
             }
-            sender.sendMessage("Unknown or unsupported NewsFlash check target: " + args[1]);
+            sender.sendMessage("Unknown or unsupported NewsFlashJP check target: " + args[1]);
             return true;
         }
 

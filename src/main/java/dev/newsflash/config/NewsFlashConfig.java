@@ -55,7 +55,7 @@ public record NewsFlashConfig(
                     .toList()
             ),
             new BroadcastConfig(
-                config.getString("broadcast.prefix", "<red><bold>[NewsFlash]</bold></red>"),
+                config.getString("broadcast.prefix", "<red><bold>[NewsFlashJP]</bold></red>"),
                 config.getString("broadcast.format", "{prefix} <gold>{source}</gold> <yellow>{title}</yellow> <gray>({date})</gray> <aqua><click:open_url:'{url}'>{url}</click></aqua>"),
                 config.getBoolean("broadcast.console", true)
             )

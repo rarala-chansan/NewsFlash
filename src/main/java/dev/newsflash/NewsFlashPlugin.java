@@ -138,7 +138,7 @@ public final class NewsFlashPlugin extends JavaPlugin {
         p2pQuakeProvider = new P2pQuakeRealtimeProvider(this, pluginConfig.p2pQuakeConfig(), broadcaster);
         p2pQuakeProvider.start();
 
-        getLogger().info("NewsFlash enabled with " + providers.size() + " polling provider(s).");
+        getLogger().info("NewsFlashJP enabled with " + providers.size() + " polling provider(s).");
     }
 
     private List<NewsProvider> createProviders(NewsFlashConfig config) {

@@ -1,15 +1,15 @@
-name: NewsFlash
+name: NewsFlashJP
 version: ${project.version}
 main: dev.newsflash.NewsFlashPlugin
 api-version: '1.21'
 author: rarala
-description: Broadcasts emergency and safety news to Minecraft server chat.
+description: Japan-focused safety alerts for Minecraft server chat.
 commands:
   newsflash:
-    description: Manage NewsFlash.
+    description: Manage NewsFlashJP.
     usage: /newsflash <reload|check|status> [mofa|p2pquake|rss]
     permission: newsflash.admin
 permissions:
   newsflash.admin:
-    description: Allows managing NewsFlash.
+    description: Allows managing NewsFlashJP.
     default: op
