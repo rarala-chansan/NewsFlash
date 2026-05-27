@@ -82,8 +82,6 @@ mofa:
 
 `mofa.filter.enabled` が `true` の場合、外務省データの `title + lead + type` に `mofa.filter.keywords` のいずれかが含まれるニュースだけを通知します。
 
-このフィルタは外務省データ専用です。P2P地震情報には適用されません。
-
 ```yaml
 mofa:
   filter:
@@ -157,25 +155,6 @@ p2pquake:
 津波予報は、津波注意報・津波警報・大津波警報を通知します。解除済みの情報は通知しません。
 
 緊急地震速報（警報）は受信したら通知します。取消情報とテスト配信は初期設定では通知しません。
-
-## チャット表示
-
-チャットの接頭辞と本文は `broadcast` で変更できます。
-
-```yaml
-broadcast:
-  prefix: "<red><bold>[NewsFlash]</bold></red>"
-  format: "{prefix} <gold>{source}</gold> <yellow>{title}</yellow> <gray>({date})</gray> <aqua><click:open_url:'{url}'>{url}</click></aqua>"
-  console: true
-```
-
-使用可能な置換:
-
-```text
-{prefix}, {source}, {type}, {title}, {lead}, {keyword}, {date}, {url}
-```
-
-表示形式には MiniMessage が使えます。
 
 ## データソース
 
