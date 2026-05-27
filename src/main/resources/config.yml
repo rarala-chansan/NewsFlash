@@ -98,6 +98,39 @@ p2pquake:
     # テスト配信も通知するかどうかです。
     include-tests: false
 
+rss:
+  # 任意のRSS/Atomフィードを取得します。
+  # 配信元ごとに利用規約が異なるため、デフォルトでは無効です。
+  enabled: false
+
+  # サーバー起動後、初回の自動取得まで待つ秒数です。
+  initial-delay-seconds: 60
+
+  # RSS/Atomフィードの取得間隔です。
+  poll-interval-minutes: 10
+
+  # 外部通信のタイムアウト秒数です。
+  timeout-seconds: 15
+
+  # 1回の取得でチャットに流す最大件数です。
+  max-broadcast-per-poll: 5
+
+  # 配信済みIDを保持する最大件数です。
+  # plugins/NewsFlash/rss-seen.txt が無制限に増えるのを防ぎます。
+  seen-history-limit: 1000
+
+  feeds:
+    # - id: "example"
+    #   name: "Example News"
+    #   url: "https://example.com/rss.xml"
+    #   enabled: true
+    #   filter:
+    #     enabled: false
+    #     default-broadcast: true
+    #     keywords:
+    #       - "地震"
+    #       - "警報"
+
 broadcast:
   # チャット先頭に表示する接頭辞です。MiniMessage形式が使えます。
   prefix: "<red><bold>[NewsFlash]</bold></red>"

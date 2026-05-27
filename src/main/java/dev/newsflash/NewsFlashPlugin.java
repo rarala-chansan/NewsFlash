@@ -5,6 +5,7 @@ import dev.newsflash.config.NewsFlashConfig;
 import dev.newsflash.provider.NewsProvider;
 import dev.newsflash.provider.mofa.MofaNewsProvider;
 import dev.newsflash.provider.p2pquake.P2pQuakeRealtimeProvider;
+import dev.newsflash.provider.rss.RssNewsProvider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -86,6 +87,12 @@ public final class NewsFlashPlugin extends JavaPlugin {
         List<NewsProvider> result = new ArrayList<>();
         if (config.mofaConfig().enabled()) {
             result.add(new MofaNewsProvider(config.mofaConfig(), config.mofaFilterConfig(), getDataFolder().toPath(), getLogger()));
+        }
+        if (config.rssConfig().enabled()) {
+            if (config.rssConfig().feeds().isEmpty()) {
+                getLogger().warning("RSS is enabled, but no feeds are configured.");
+            }
+            result.add(new RssNewsProvider(config.rssConfig(), getDataFolder().toPath(), getLogger()));
         }
 
         if (result.isEmpty()) {

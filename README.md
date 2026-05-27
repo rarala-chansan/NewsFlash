@@ -14,6 +14,7 @@ Minecraft 1.21.8 / Paper 向けのニュース速報プラグインです。
 - デフォルトでは最大震度4以上の地震情報を通知
 - 津波注意報・津波警報・大津波警報を通知
 - 緊急地震速報（警報）を通知
+- 任意のRSS/Atomフィードを設定して通知
 - 重複通知を防止
 - `/newsflash reload` による設定再読み込み
 
@@ -155,6 +156,31 @@ p2pquake:
 津波予報は、津波注意報・津波警報・大津波警報を通知します。解除済みの情報は通知しません。
 
 緊急地震速報（警報）は受信したら通知します。取消情報とテスト配信は初期設定では通知しません。
+
+## RSS/Atom
+
+任意のRSS/Atomフィードを定期取得できます。配信元ごとに利用規約が異なるため、デフォルトでは無効で、URLも同梱していません。
+
+```yaml
+rss:
+  enabled: false
+  poll-interval-minutes: 10
+  max-broadcast-per-poll: 5
+
+  feeds:
+    # - id: "example"
+    #   name: "Example News"
+    #   url: "https://example.com/rss.xml"
+    #   enabled: true
+    #   filter:
+    #     enabled: false
+    #     default-broadcast: true
+    #     keywords:
+    #       - "地震"
+    #       - "警報"
+```
+
+`filter.enabled: true` にすると、そのフィードの `title + description` に `keywords` のいずれかが含まれる記事だけを通知できます。
 
 ## データソース
 

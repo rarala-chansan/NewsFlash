@@ -26,6 +26,8 @@ public final class NewsFlashCommand implements CommandExecutor, TabCompleter {
                 + ", earthquake min scale " + plugin.pluginConfig().p2pQuakeConfig().minScale()
                 + ", tsunami " + (plugin.pluginConfig().p2pQuakeConfig().tsunamiEnabled() ? "enabled" : "disabled")
                 + ", eew " + (plugin.pluginConfig().p2pQuakeConfig().eewEnabled() ? "enabled" : "disabled"));
+            sender.sendMessage("- RSS/Atom: " + (plugin.pluginConfig().rssConfig().enabled() ? "enabled" : "disabled")
+                + ", feeds " + plugin.pluginConfig().rssConfig().feeds().size());
             return true;
         }
 

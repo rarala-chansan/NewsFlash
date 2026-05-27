@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 public record NewsFlashConfig(
     MofaConfig mofaConfig,
     P2pQuakeConfig p2pQuakeConfig,
+    RssConfig rssConfig,
     FilterConfig mofaFilterConfig,
     BroadcastConfig broadcastConfig
 ) {
@@ -37,6 +38,15 @@ public record NewsFlashConfig(
                 config.getBoolean("p2pquake.eew.include-tests", false),
                 Math.max(100, config.getInt("p2pquake.seen-history-limit", 1000))
             ),
+            new RssConfig(
+                config.getBoolean("rss.enabled", false),
+                Math.max(0, config.getInt("rss.initial-delay-seconds", 60)),
+                Math.max(1, config.getInt("rss.poll-interval-minutes", 10)),
+                Math.max(1, config.getInt("rss.timeout-seconds", 15)),
+                Math.max(1, config.getInt("rss.max-broadcast-per-poll", 5)),
+                Math.max(100, config.getInt("rss.seen-history-limit", 1000)),
+                rssFeeds(config)
+            ),
             new FilterConfig(
                 config.getBoolean("mofa.filter.enabled", config.getBoolean("filter.enabled", true)),
                 config.getBoolean("mofa.filter.default-broadcast", config.getBoolean("filter.default-broadcast", false)),
@@ -59,5 +69,37 @@ public record NewsFlashConfig(
             return values;
         }
         return config.getStringList(fallbackPath);
+    }
+
+    private static java.util.List<RssFeedConfig> rssFeeds(FileConfiguration config) {
+        java.util.List<java.util.Map<?, ?>> maps = config.getMapList("rss.feeds");
+        java.util.List<RssFeedConfig> feeds = new java.util.ArrayList<>();
+        for (int index = 0; index < maps.size(); index++) {
+            String path = "rss.feeds." + index;
+            String name = config.getString(path + ".name", "RSS Feed " + (index + 1));
+            String url = config.getString(path + ".url", "");
+            String id = config.getString(path + ".id", slug(name.isBlank() ? url : name));
+            feeds.add(new RssFeedConfig(
+                id,
+                name,
+                url,
+                config.getBoolean(path + ".enabled", true),
+                new FilterConfig(
+                    config.getBoolean(path + ".filter.enabled", false),
+                    config.getBoolean(path + ".filter.default-broadcast", true),
+                    config.getStringList(path + ".filter.keywords").stream()
+                        .map(String::trim)
+                        .filter(keyword -> !keyword.isBlank())
+                        .toList()
+                )
+            ));
+        }
+        return java.util.List.copyOf(feeds);
+    }
+
+    private static String slug(String value) {
+        String slug = value.toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9_-]+", "-");
+        slug = slug.replaceAll("^-+|-+$", "");
+        return slug.isBlank() ? "feed" : slug;
     }
 }
