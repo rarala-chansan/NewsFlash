@@ -1,0 +1,79 @@
+# NewsFlash 設定
+
+mofa:
+  # 外務省 海外安全情報オープンデータの取得を有効にします。
+  enabled: true
+
+  # サーバー起動後、初回の自動取得まで待つ秒数です。
+  # 起動直後にプレイヤーがまだ参加していない場合の見逃しを防ぎます。
+  initial-delay-seconds: 60
+
+  # 自動取得の間隔です。外務省データは概ね5分間隔で更新されます。
+  poll-interval-minutes: 5
+
+  # 外務省「新着情報」軽量XMLのURLです。通常は変更不要です。
+  url: "https://www.ezairyu.mofa.go.jp/opendata/area/newarrivalL.xml"
+
+  # 外部通信のタイムアウト秒数です。
+  timeout-seconds: 15
+
+  # 初回起動時に、既にXML内に存在する古いニュースを一気に流さないようにします。
+  # true の場合、初回取得分は既読登録のみ行い、次回以降の新着だけ通知します。
+  suppress-initial-broadcast: true
+
+  # 1回の取得でチャットに流す最大件数です。
+  max-broadcast-per-poll: 5
+
+  # 配信済みIDを保持する最大件数です。
+  # plugins/NewsFlash/mofa-seen.txt が無制限に増えるのを防ぎます。
+  seen-history-limit: 1000
+
+filter:
+  # 通知キーワードフィルタを有効にします。
+  # true の場合、下の keywords に一致したニュースだけ通知します。
+  enabled: true
+
+  # keywords に一致しないニュースも通知するかどうかです。
+  # 通知を絞りたい場合は false のままにしてください。
+  default-broadcast: false
+
+  # 通知対象にするキーワードです。
+  # 判定対象は title + lead + type です。
+  keywords:
+    - "弾道ミサイル"
+    - "ミサイル"
+    - "退避"
+    - "避難指示"
+    - "攻撃"
+    - "空爆"
+    - "戦闘"
+    - "爆発"
+    - "化学物質"
+    - "エボラ"
+    - "アウトブレイク"
+    - "誘拐"
+    - "邦人"
+    - "日本人"
+    - "在留邦人"
+    - "強盗"
+    - "銃撃"
+    - "襲撃"
+    - "行方不明"
+    - "地震"
+    - "津波"
+    - "空港"
+    - "道路封鎖"
+    - "燃料不足"
+    - "食品不足"
+    - "外出禁止"
+
+broadcast:
+  # チャット先頭に表示する接頭辞です。MiniMessage形式が使えます。
+  prefix: "<red><bold>[NewsFlash]</bold></red>"
+
+  # チャットに流す本文フォーマットです。MiniMessage形式が使えます。
+  # 使用可能な置換: {prefix}, {source}, {type}, {title}, {lead}, {keyword}, {date}, {url}
+  format: "{prefix} <gold>{source}</gold> <yellow>{title}</yellow> <gray>({date})</gray> <aqua><click:open_url:'{url}'>{url}</click></aqua>"
+
+  # 通知内容をサーバーコンソールにも出力します。
+  console: true

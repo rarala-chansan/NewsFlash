@@ -1,0 +1,15 @@
+name: NewsFlash
+version: ${project.version}
+main: dev.newsflash.NewsFlashPlugin
+api-version: '1.21'
+author: rarala
+description: Broadcasts emergency and safety news to Minecraft server chat.
+commands:
+  newsflash:
+    description: Manage NewsFlash.
+    usage: /newsflash <reload|check|status>
+    permission: newsflash.admin
+permissions:
+  newsflash.admin:
+    description: Allows managing NewsFlash.
+    default: op
