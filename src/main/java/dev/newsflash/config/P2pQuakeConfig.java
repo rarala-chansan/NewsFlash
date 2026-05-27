@@ -11,6 +11,9 @@ public record P2pQuakeConfig(
     boolean targetPrefecturesEnabled,
     List<String> targetPrefectures,
     boolean includeUnknownScale,
+    boolean tsunamiEnabled,
+    boolean eewEnabled,
+    boolean eewIncludeTests,
     int seenHistoryLimit
 ) {
 }

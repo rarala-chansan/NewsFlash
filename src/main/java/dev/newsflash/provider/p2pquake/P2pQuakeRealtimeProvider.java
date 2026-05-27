@@ -28,6 +28,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
     private static final int JMA_QUAKE_CODE = 551;
+    private static final int JMA_TSUNAMI_CODE = 552;
+    private static final int EEW_CODE = 556;
     private static final DateTimeFormatter P2PQUAKE_TIME = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss[.SSS]");
 
     private final NewsFlashPlugin plugin;
@@ -121,32 +123,138 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
         try {
             JsonObject root = JsonParser.parseString(payload).getAsJsonObject();
             int code = intValue(root, "code", -1);
-            if (code != JMA_QUAKE_CODE || !config.earthquakeEnabled()) {
-                return;
-            }
-
             String id = stringValue(root, "id", "");
             if (id.isBlank() || isSeen(id)) {
                 return;
             }
 
-            JsonObject earthquake = objectValue(root, "earthquake");
-            if (earthquake == null) {
+            NewsItem item = switch (code) {
+                case JMA_QUAKE_CODE -> handleQuake(root);
+                case JMA_TSUNAMI_CODE -> handleTsunami(root);
+                case EEW_CODE -> handleEew(root);
+                default -> null;
+            };
+
+            if (item == null) {
                 return;
             }
 
-            QuakeMatch match = matchQuake(root, earthquake);
-            if (!match.shouldBroadcast()) {
-                remember(id);
-                return;
-            }
-
-            NewsItem item = toNewsItem(root, earthquake, match);
             remember(id);
             Bukkit.getScheduler().runTask(plugin, () -> broadcaster.broadcast(List.of(item)));
         } catch (Exception exception) {
             plugin.getLogger().log(Level.WARNING, "Failed to handle P2PQuake message.", exception);
         }
+    }
+
+    private NewsItem handleQuake(JsonObject root) {
+        if (!config.earthquakeEnabled()) {
+            return null;
+        }
+
+        String id = stringValue(root, "id", "");
+        JsonObject earthquake = objectValue(root, "earthquake");
+        if (earthquake == null) {
+            return null;
+        }
+
+        QuakeMatch match = matchQuake(root, earthquake);
+        if (!match.shouldBroadcast()) {
+            remember(id);
+            return null;
+        }
+
+        return toQuakeNewsItem(root, earthquake, match);
+    }
+
+    private NewsItem handleTsunami(JsonObject root) {
+        if (!config.tsunamiEnabled()) {
+            return null;
+        }
+        if (booleanValue(root, "cancelled", false)) {
+            remember(stringValue(root, "id", ""));
+            return null;
+        }
+
+        JsonArray areas = arrayValue(root, "areas");
+        if (areas == null || areas.isEmpty()) {
+            return null;
+        }
+
+        List<String> targets = new ArrayList<>();
+        String strongestGrade = "";
+        for (JsonElement element : areas) {
+            if (!element.isJsonObject()) {
+                continue;
+            }
+            JsonObject area = element.getAsJsonObject();
+            String grade = stringValue(area, "grade", "Unknown");
+            if (!isTsunamiWarningGrade(grade)) {
+                continue;
+            }
+            strongestGrade = strongerTsunamiGrade(strongestGrade, grade);
+            if (targets.size() < 8) {
+                targets.add(tsunamiGradeLabel(grade) + " " + stringValue(area, "name", "地域不明"));
+            }
+        }
+
+        if (targets.isEmpty()) {
+            return null;
+        }
+
+        String title = "津波情報: " + tsunamiGradeLabel(strongestGrade);
+        String lead = "対象地域: " + String.join(", ", targets);
+
+        return new NewsItem(
+            stringValue(root, "id", ""),
+            "P2P地震情報",
+            "津波予報",
+            title,
+            lead,
+            "https://www.p2pquake.net/",
+            parseTime(stringValue(root, "time", "")),
+            tsunamiGradeLabel(strongestGrade)
+        );
+    }
+
+    private NewsItem handleEew(JsonObject root) {
+        if (!config.eewEnabled()) {
+            return null;
+        }
+        if (booleanValue(root, "cancelled", false)) {
+            remember(stringValue(root, "id", ""));
+            return null;
+        }
+        if (booleanValue(root, "test", false) && !config.eewIncludeTests()) {
+            remember(stringValue(root, "id", ""));
+            return null;
+        }
+
+        JsonObject earthquake = objectValue(root, "earthquake");
+        JsonObject hypocenter = earthquake == null ? null : objectValue(earthquake, "hypocenter");
+        String hypocenterName = hypocenter == null ? "震源不明" : stringValue(hypocenter, "name", "震源不明");
+        double magnitude = hypocenter == null ? -1.0 : doubleValue(hypocenter, "magnitude", -1.0);
+        int depth = hypocenter == null ? -1 : (int) doubleValue(hypocenter, "depth", -1.0);
+        JsonObject issue = objectValue(root, "issue");
+        String serial = issue == null ? "不明" : stringValue(issue, "serial", "不明");
+
+        EewAreaSummary areaSummary = eewAreaSummary(root);
+        String title = "緊急地震速報（警報）: " + hypocenterName;
+        String lead = "第" + serial + "報"
+            + " / 最大予測震度" + scaleLabel(areaSummary.maxScale())
+            + " / M" + (magnitude < 0 ? "不明" : String.format("%.1f", magnitude))
+            + " / 深さ" + (depth < 0 ? "不明" : depth + "km")
+            + areaSummary.text();
+
+        return new NewsItem(
+            stringValue(root, "id", ""),
+            "P2P地震情報",
+            "緊急地震速報",
+            title,
+            lead,
+            "https://www.p2pquake.net/",
+            parseTime(stringValue(root, "time", "")),
+            "緊急地震速報"
+        );
     }
 
     private QuakeMatch matchQuake(JsonObject root, JsonObject earthquake) {
@@ -186,7 +294,7 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
         return scale >= config.minScale();
     }
 
-    private NewsItem toNewsItem(JsonObject root, JsonObject earthquake, QuakeMatch match) {
+    private NewsItem toQuakeNewsItem(JsonObject root, JsonObject earthquake, QuakeMatch match) {
         JsonObject hypocenter = objectValue(earthquake, "hypocenter");
         String hypocenterName = hypocenter == null ? "震源不明" : stringValue(hypocenter, "name", "震源不明");
         double magnitude = hypocenter == null ? -1.0 : doubleValue(hypocenter, "magnitude", -1.0);
@@ -283,6 +391,7 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
             case 55 -> "6弱";
             case 60 -> "6強";
             case 70 -> "7";
+            case 99 -> "程度以上";
             default -> "不明";
         };
     }
@@ -296,6 +405,63 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
             case "Warning" -> "津波警報";
             default -> "不明";
         };
+    }
+
+    private boolean isTsunamiWarningGrade(String grade) {
+        return grade.equals("MajorWarning") || grade.equals("Warning") || grade.equals("Watch");
+    }
+
+    private String strongerTsunamiGrade(String current, String candidate) {
+        if (tsunamiGradeRank(candidate) > tsunamiGradeRank(current)) {
+            return candidate;
+        }
+        return current;
+    }
+
+    private int tsunamiGradeRank(String grade) {
+        return switch (grade) {
+            case "MajorWarning" -> 3;
+            case "Warning" -> 2;
+            case "Watch" -> 1;
+            default -> 0;
+        };
+    }
+
+    private String tsunamiGradeLabel(String grade) {
+        return switch (grade) {
+            case "MajorWarning" -> "大津波警報";
+            case "Warning" -> "津波警報";
+            case "Watch" -> "津波注意報";
+            default -> "津波情報";
+        };
+    }
+
+    private EewAreaSummary eewAreaSummary(JsonObject root) {
+        JsonArray areas = arrayValue(root, "areas");
+        if (areas == null || areas.isEmpty()) {
+            return new EewAreaSummary(-1, "");
+        }
+
+        int maxScale = -1;
+        List<String> targets = new ArrayList<>();
+        for (JsonElement element : areas) {
+            if (!element.isJsonObject()) {
+                continue;
+            }
+            JsonObject area = element.getAsJsonObject();
+            int scaleTo = (int) doubleValue(area, "scaleTo", -1.0);
+            int scaleFrom = (int) doubleValue(area, "scaleFrom", -1.0);
+            int areaScale = Math.max(scaleFrom, scaleTo);
+            maxScale = Math.max(maxScale, areaScale);
+            if (targets.size() < 8) {
+                targets.add(stringValue(area, "pref", "") + " " + stringValue(area, "name", "") + " 震度" + scaleLabel(areaScale));
+            }
+        }
+
+        if (targets.isEmpty()) {
+            return new EewAreaSummary(maxScale, "");
+        }
+        return new EewAreaSummary(maxScale, " / 対象地域: " + String.join(", ", targets));
     }
 
     private JsonObject objectValue(JsonObject object, String key) {
@@ -338,11 +504,22 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
         return element.getAsDouble();
     }
 
+    private boolean booleanValue(JsonObject object, String key, boolean fallback) {
+        JsonElement element = object.get(key);
+        if (element == null || element.isJsonNull()) {
+            return fallback;
+        }
+        return element.getAsBoolean();
+    }
+
     private record QuakeMatch(
         boolean shouldBroadcast,
         int nationwideMaxScale,
         int targetMaxScale,
         List<String> matchedAreas
     ) {
+    }
+
+    private record EewAreaSummary(int maxScale, String text) {
     }
 }

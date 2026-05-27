@@ -87,6 +87,17 @@ p2pquake:
     # 最大震度不明の地震情報も通知するかどうかです。
     include-unknown-scale: false
 
+  tsunami:
+    # 津波注意報・津波警報・大津波警報をチャットへ通知します。
+    enabled: true
+
+  eew:
+    # 緊急地震速報（警報）をチャットへ通知します。
+    enabled: true
+
+    # テスト配信も通知するかどうかです。
+    include-tests: false
+
 broadcast:
   # チャット先頭に表示する接頭辞です。MiniMessage形式が使えます。
   prefix: "<red><bold>[NewsFlash]</bold></red>"

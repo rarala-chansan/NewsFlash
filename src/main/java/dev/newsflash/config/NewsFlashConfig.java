@@ -32,6 +32,9 @@ public record NewsFlashConfig(
                     .filter(prefecture -> !prefecture.isBlank())
                     .toList(),
                 config.getBoolean("p2pquake.earthquake.include-unknown-scale", false),
+                config.getBoolean("p2pquake.tsunami.enabled", true),
+                config.getBoolean("p2pquake.eew.enabled", true),
+                config.getBoolean("p2pquake.eew.include-tests", false),
                 Math.max(100, config.getInt("p2pquake.seen-history-limit", 1000))
             ),
             new FilterConfig(
