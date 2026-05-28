@@ -158,7 +158,7 @@ rss:
 broadcast:
   # Prefix. MiniMessage is supported.
   # 接頭辞。MiniMessage対応。
-  prefix: "<red><bold>[NewsFlash]</bold></red>"
+  prefix: "<aqua><bold>[NewsFlash]</bold></aqua>"
 
   # Chat format. Placeholders: {prefix}, {source}, {type}, {title}, {lead}, {keyword}, {date}, {url}
   # チャット形式。置換: {prefix}, {source}, {type}, {title}, {lead}, {keyword}, {date}, {url}
@@ -177,22 +177,22 @@ broadcast:
     # Fixed prefix + scrolling ticker.
     # 固定接頭辞 + 横スクロール本文。
     enabled: false
-    format: "{prefix} <yellow>{ticker}</yellow>"
+    format: "{prefix} {ticker}"
 
   bossbar:
     # Fixed prefix + scrolling ticker. Available colors: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE.
     # 固定接頭辞 + 横スクロール本文。色: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE。
     enabled: true
-    format: "{prefix} <yellow>{ticker}</yellow>"
+    format: "{prefix} {ticker}"
     color: "WHITE"
     overlay: "PROGRESS"
     progress: 1.0
 
   ticker:
-    # Shared ticker settings. width is display width. 20 ticks = 1 second.
-    # 共通スクロール設定。width は表示幅です。20 ticks = 1秒。
+    # Shared ticker settings. speed-ticks: smaller is faster. 20 ticks = 1 second.
+    # 共通スクロール設定。speed-ticks は小さいほど速いです。20 ticks = 1秒。
     width: 48
-    interval-ticks: 4
+    speed-ticks: 4
     duration-seconds: 18
     separator: "   "
     pad-character: " "

@@ -156,8 +156,8 @@ public final class NewsBroadcaster {
 
     private String tickerPadCharacter() {
         String value = config.tickerPadCharacter();
-        if (value == null || value.isEmpty()) {
-            return " ";
+        if (value == null || value.isEmpty() || value.isBlank()) {
+            return "\u00A0";
         }
         return new String(Character.toChars(value.codePointAt(0)));
     }
@@ -190,6 +190,9 @@ public final class NewsBroadcaster {
     private int displayWidth(int codePoint) {
         if (Character.isISOControl(codePoint)) {
             return 0;
+        }
+        if (codePoint == 0x00A0) {
+            return 1;
         }
         Character.UnicodeBlock block = Character.UnicodeBlock.of(codePoint);
         if (block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS

@@ -162,24 +162,24 @@ broadcast:
 
   actionbar:
     enabled: false
-    format: "{prefix} <yellow>{ticker}</yellow>"
+    format: "{prefix} {ticker}"
 
   bossbar:
     enabled: true
-    format: "{prefix} <yellow>{ticker}</yellow>"
+    format: "{prefix} {ticker}"
     color: "WHITE"
     overlay: "PROGRESS"
     progress: 1.0
 
   ticker:
     width: 48
-    interval-ticks: 4
+    speed-ticks: 4
     duration-seconds: 18
     separator: "   "
     pad-character: " "
 ```
 
-`{prefix}` は固定表示、`{ticker}` は横スクロール本文です。`ticker.width` は表示幅で、日本語などの全角文字は広めに扱います。足りない幅は `pad-character` で埋めます。
+`{prefix}` は固定表示、`{ticker}` は横スクロール本文です。`ticker.width` は表示幅で、日本語などの全角文字は広めに扱います。`speed-ticks` は小さいほど速く、足りない幅は `pad-character` で埋めます。
 
 ## 外務省 海外安全情報
 
