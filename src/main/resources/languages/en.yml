@@ -1,3 +1,9 @@
+# Japan-specific translation keys:
+# - sources.mofa: MOFA overseas safety information intended mainly for Japanese users.
+# - sources.p2pquake / types.* / p2pquake.* / scales.* / tsunami-*:
+#   Japan-focused earthquake, tsunami, EEW, seismic intensity, and prefecture-related wording.
+# RSS/Atom feed names and article bodies are not translated by this file.
+
 common:
   enabled: "enabled"
   disabled: "disabled"

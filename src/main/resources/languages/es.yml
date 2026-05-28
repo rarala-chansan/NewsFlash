@@ -1,2 +1,73 @@
-# Spanish translation placeholder.
-# Missing keys fall back to languages/en.yml.
+# Claves de traducción específicas de Japón:
+# - sources.mofa: información de seguridad en el extranjero de MOFA destinada principalmente a usuarios japoneses.
+# - sources.p2pquake / types.* / p2pquake.* / scales.* / tsunami-*:
+#   textos sobre terremotos, tsunamis, alertas EEW, intensidad sísmica y prefecturas de Japón.
+# Los nombres de feeds RSS/Atom y el contenido de los artículos no se traducen con este archivo.
+
+common:
+  enabled: "activado"
+  disabled: "desactivado"
+  unknown: "desconocido"
+
+commands:
+  provider-count: "Fuentes de NewsFlash: {count}"
+  provider-schedule: "- {name}: primera comprobación tras {initialDelaySeconds} segundo(s), luego cada {pollIntervalMinutes} minuto(s)"
+  p2p-status: "- P2PQuake: {enabled}, intensidad mínima de terremoto {minScale}, tsunami {tsunami}, EEW {eew}"
+  rss-status: "- RSS/Atom: {enabled}, feeds {feedCount}"
+  rss-feed-status: "  - {id}: {enabled}, filtro {filter}"
+  reloaded: "NewsFlash recargado."
+  reloaded-target: "NewsFlash recargado: {target}"
+  unknown-reload-target: "Destino de recarga desconocido: {target}"
+  check-started: "Comprobación de NewsFlash iniciada."
+  check-started-target: "Comprobación de NewsFlash iniciada: {target}"
+  unknown-check-target: "Destino de comprobación desconocido o no compatible: {target}"
+
+sources:
+  mofa: "Seguridad en el extranjero de MOFA"
+  p2pquake: "P2PQuake"
+
+types:
+  quake: "Información de terremoto"
+  tsunami: "Pronóstico de tsunami"
+  eew: "Alerta temprana de terremoto"
+
+p2pquake:
+  quake-title: "Terremoto: intensidad máxima {scale} {hypocenter}"
+  quake-lead: "Hora: {time} / M{magnitude} / Profundidad {depth} / Tsunami: {tsunami}{targetAreaText}"
+  tsunami-title: "Tsunami: {grade}"
+  target-areas: "Áreas objetivo: {areas}"
+  eew-title: "Alerta temprana de terremoto: {hypocenter}"
+  eew-lead: "Informe {serial} / intensidad máxima prevista {scale} / M{magnitude} / profundidad {depth}{areaText}"
+  target-area-max-scale: " / Intensidad máxima en el área objetivo: {scale}"
+  target-area-list: " / Áreas objetivo: {areas}"
+  matched-max-scale: "Intensidad máxima {scale}"
+  matched-target-max-scale: "Intensidad máxima en el área objetivo {scale}"
+  area-scale: "{pref} {area} intensidad {scale}"
+  unknown-hypocenter: "Hipocentro desconocido"
+  unknown-area: "Área desconocida"
+  depth: "{depth}km"
+
+scales:
+  10: "1"
+  20: "2"
+  30: "3"
+  40: "4"
+  45: "5 inferior"
+  46: "5 inferior o superior"
+  50: "5 superior"
+  55: "6 inferior"
+  60: "6 superior"
+  70: "7"
+  99: "o superior"
+
+tsunami-status:
+  None: "Ninguno"
+  Checking: "En comprobación"
+  NonEffective: "Cambios menores del nivel del mar"
+  Watch: "Aviso de tsunami"
+  Warning: "Alerta de tsunami"
+
+tsunami-grades:
+  MajorWarning: "Alerta de gran tsunami"
+  Warning: "Alerta de tsunami"
+  Watch: "Aviso de tsunami"

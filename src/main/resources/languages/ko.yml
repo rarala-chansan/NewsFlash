@@ -1,2 +1,73 @@
-# Korean translation placeholder.
-# Missing keys fall back to languages/en.yml.
+# Japan-specific translation keys:
+# - sources.mofa: MOFA overseas safety information intended mainly for Japanese users.
+# - sources.p2pquake / types.* / p2pquake.* / scales.* / tsunami-*:
+#   Japan-focused earthquake, tsunami, EEW, seismic intensity, and prefecture-related wording.
+# RSS/Atom feed names and article bodies are not translated by this file.
+
+common:
+  enabled: "활성화됨"
+  disabled: "비활성화됨"
+  unknown: "알 수 없음"
+
+commands:
+  provider-count: "NewsFlash 제공자: {count}"
+  provider-schedule: "- {name}: {initialDelaySeconds}초 후 첫 확인, 이후 {pollIntervalMinutes}분마다"
+  p2p-status: "- P2PQuake: {enabled}, 지진 최소 진도 {minScale}, 쓰나미 {tsunami}, 긴급지진속보 {eew}"
+  rss-status: "- RSS/Atom: {enabled}, 피드 {feedCount}"
+  rss-feed-status: "  - {id}: {enabled}, 필터 {filter}"
+  reloaded: "NewsFlash를 다시 불러왔습니다."
+  reloaded-target: "NewsFlash를 다시 불러왔습니다: {target}"
+  unknown-reload-target: "알 수 없는 NewsFlash 다시 불러오기 대상입니다: {target}"
+  check-started: "NewsFlash 확인을 시작했습니다."
+  check-started-target: "NewsFlash 확인을 시작했습니다: {target}"
+  unknown-check-target: "알 수 없거나 지원되지 않는 NewsFlash 확인 대상입니다: {target}"
+
+sources:
+  mofa: "MOFA 해외 안전 정보"
+  p2pquake: "P2PQuake"
+
+types:
+  quake: "지진"
+  tsunami: "쓰나미 예보"
+  eew: "긴급지진속보"
+
+p2pquake:
+  quake-title: "지진: 최대 진도 {scale} {hypocenter}"
+  quake-lead: "시각: {time} / M{magnitude} / 깊이 {depth} / 쓰나미: {tsunami}{targetAreaText}"
+  tsunami-title: "쓰나미: {grade}"
+  target-areas: "대상 지역: {areas}"
+  eew-title: "긴급지진속보: {hypocenter}"
+  eew-lead: "제{serial}보 / 최대 예상 진도 {scale} / M{magnitude} / 깊이 {depth}{areaText}"
+  target-area-max-scale: " / 대상 지역 최대 진도: {scale}"
+  target-area-list: " / 대상 지역: {areas}"
+  matched-max-scale: "최대 진도 {scale}"
+  matched-target-max-scale: "대상 지역 최대 진도 {scale}"
+  area-scale: "{pref} {area} 진도 {scale}"
+  unknown-hypocenter: "진원지 알 수 없음"
+  unknown-area: "알 수 없는 지역"
+  depth: "{depth}km"
+
+scales:
+  10: "1"
+  20: "2"
+  30: "3"
+  40: "4"
+  45: "5약"
+  46: "5약 이상"
+  50: "5강"
+  55: "6약"
+  60: "6강"
+  70: "7"
+  99: "이상"
+
+tsunami-status:
+  None: "없음"
+  Checking: "확인 중"
+  NonEffective: "약간의 해수면 변동"
+  Watch: "쓰나미 주의보"
+  Warning: "쓰나미 경보"
+
+tsunami-grades:
+  MajorWarning: "대형 쓰나미 경보"
+  Warning: "쓰나미 경보"
+  Watch: "쓰나미 주의보"

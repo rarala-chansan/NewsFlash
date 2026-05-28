@@ -1,2 +1,73 @@
-# Simplified Chinese translation placeholder.
-# Missing keys fall back to languages/en.yml.
+# Japan-specific translation keys:
+# - sources.mofa: MOFA overseas safety information intended mainly for Japanese users.
+# - sources.p2pquake / types.* / p2pquake.* / scales.* / tsunami-*:
+#   Japan-focused earthquake, tsunami, EEW, seismic intensity, and prefecture-related wording.
+# RSS/Atom feed names and article bodies are not translated by this file.
+
+common:
+  enabled: "已启用"
+  disabled: "已禁用"
+  unknown: "未知"
+
+commands:
+  provider-count: "NewsFlash 提供源: {count}"
+  provider-schedule: "- {name}: {initialDelaySeconds} 秒后首次检查，之后每 {pollIntervalMinutes} 分钟检查一次"
+  p2p-status: "- P2PQuake: {enabled}, 地震最低震度 {minScale}, 海啸 {tsunami}, 紧急地震速报 {eew}"
+  rss-status: "- RSS/Atom: {enabled}, 订阅源 {feedCount}"
+  rss-feed-status: "  - {id}: {enabled}, 过滤器 {filter}"
+  reloaded: "NewsFlash 已重新加载。"
+  reloaded-target: "NewsFlash 已重新加载: {target}"
+  unknown-reload-target: "未知的 NewsFlash 重新加载目标: {target}"
+  check-started: "NewsFlash 检查已开始。"
+  check-started-target: "NewsFlash 检查已开始: {target}"
+  unknown-check-target: "未知或不受支持的 NewsFlash 检查目标: {target}"
+
+sources:
+  mofa: "MOFA 海外安全信息"
+  p2pquake: "P2PQuake"
+
+types:
+  quake: "地震"
+  tsunami: "海啸预报"
+  eew: "紧急地震速报"
+
+p2pquake:
+  quake-title: "地震: 最大震度 {scale} {hypocenter}"
+  quake-lead: "时间: {time} / M{magnitude} / 深度 {depth} / 海啸: {tsunami}{targetAreaText}"
+  tsunami-title: "海啸: {grade}"
+  target-areas: "目标地区: {areas}"
+  eew-title: "紧急地震速报: {hypocenter}"
+  eew-lead: "第 {serial} 报 / 最大预测震度 {scale} / M{magnitude} / 深度 {depth}{areaText}"
+  target-area-max-scale: " / 目标地区最大震度: {scale}"
+  target-area-list: " / 目标地区: {areas}"
+  matched-max-scale: "最大震度 {scale}"
+  matched-target-max-scale: "目标地区最大震度 {scale}"
+  area-scale: "{pref} {area} 震度 {scale}"
+  unknown-hypocenter: "震源未知"
+  unknown-area: "未知地区"
+  depth: "{depth}km"
+
+scales:
+  10: "1"
+  20: "2"
+  30: "3"
+  40: "4"
+  45: "5弱"
+  46: "5弱以上"
+  50: "5强"
+  55: "6弱"
+  60: "6强"
+  70: "7"
+  99: "以上"
+
+tsunami-status:
+  None: "无"
+  Checking: "确认中"
+  NonEffective: "轻微海平面变化"
+  Watch: "海啸注意报"
+  Warning: "海啸警报"
+
+tsunami-grades:
+  MajorWarning: "大海啸警报"
+  Warning: "海啸警报"
+  Watch: "海啸注意报"

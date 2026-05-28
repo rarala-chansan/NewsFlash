@@ -1,3 +1,5 @@
+# RSS/Atomの配信元名や記事本文は、この翻訳ファイルでは翻訳されません。
+
 common:
   enabled: "有効"
   disabled: "無効"
@@ -16,6 +18,7 @@ commands:
   check-started-target: "NewsFlash の確認を開始しました: {target}"
   unknown-check-target: "不明または未対応の check 対象です: {target}"
 
+# 日本固有寄りの翻訳キー:
 sources:
   mofa: "外務省 海外安全情報"
   p2pquake: "P2P地震情報"
