@@ -59,7 +59,7 @@ public record NewsFlashConfig(
                 config.getBoolean("discord.broadcast.chat", false),
                 config.getBoolean("discord.broadcast.actionbar", true),
                 config.getBoolean("discord.broadcast.bossbar", false),
-                config.getString("discord.format", "<blue><bold>[Discord]</bold></blue> <gray>{author}</gray>: <white>{message}</white>")
+                config.getString("discord.format", "<blue><bold>[Discord]</bold></blue> <aqua><author></aqua>: <gray><bold><message></bold></gray>")
             ),
             new RssConfig(
                 config.getBoolean("rss.enabled", false),

@@ -317,7 +317,7 @@ discord:
   strip-mentions: true
   strip-markdown: true
 
-  format: "<blue><bold>[Discord]</bold></blue> <gray><author></gray>: <white><message></white>"
+  format: "<blue><bold>[Discord]</bold></blue> <aqua><author></aqua>: <gray><bold><message></bold></gray>"
 
   broadcast:
     chat: false

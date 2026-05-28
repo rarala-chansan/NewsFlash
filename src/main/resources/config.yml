@@ -173,7 +173,7 @@ discord:
 
   # Discord relay format. Placeholders: <author>, <message>
   # Discord転送形式。置換: <author>, <message>
-  format: "<blue><bold>[Discord]</bold></blue> <gray><author></gray>: <white><message></white>"
+  format: "<blue><bold>[Discord]</bold></blue> <aqua><author></aqua>: <gray><bold><message></bold></gray>"
 
   broadcast:
     # Discord messages use their own destinations.
