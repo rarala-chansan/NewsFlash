@@ -171,7 +171,7 @@ broadcast:
   chat:
     # Send normal chat messages.
     # 通常チャットへ通知。
-    enabled: true
+    enabled: false
 
   actionbar:
     # Scrolling actionbar ticker.
@@ -182,16 +182,17 @@ broadcast:
   bossbar:
     # Scrolling bossbar ticker. color/overlay use Adventure names.
     # ボスバーの横スクロール通知。color/overlay は Adventure 名です。
-    enabled: false
+    enabled: true
     format: "{prefix} <yellow>{ticker}</yellow>"
     color: "YELLOW"
-    overlay: "PROGRESS"
+    overlay: "NOTCHED_20"
     progress: 1.0
 
   ticker:
-    # Shared ticker settings. 20 ticks = 1 second.
-    # 共通スクロール設定。20 ticks = 1秒。
+    # Shared ticker settings. width is display width. 20 ticks = 1 second.
+    # 共通スクロール設定。width は表示幅です。20 ticks = 1秒。
     width: 48
     interval-ticks: 4
     duration-seconds: 18
     separator: "   "
+    pad-character: " "

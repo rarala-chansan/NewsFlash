@@ -15,6 +15,7 @@ public record BroadcastConfig(
     int tickerWidth,
     int tickerIntervalTicks,
     int tickerDurationSeconds,
-    String tickerSeparator
+    String tickerSeparator,
+    String tickerPadCharacter
 ) {
 }

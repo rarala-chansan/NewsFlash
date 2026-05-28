@@ -79,7 +79,8 @@ public final class NewsBroadcaster {
         int width = config.tickerWidth();
         int intervalTicks = config.tickerIntervalTicks();
         int totalFrames = Math.max(1, config.tickerDurationSeconds() * 20 / intervalTicks);
-        String cycle = " ".repeat(width) + tickerText(item) + config.tickerSeparator();
+        String padCharacter = tickerPadCharacter();
+        String cycle = pad(padCharacter, width) + tickerText(item) + config.tickerSeparator();
         if (config.bossBarEnabled()) {
             activeBossBar = BossBar.bossBar(Component.empty(), config.bossBarProgress(), bossBarColor(), bossBarOverlay());
             showBossBar(activeBossBar);
@@ -101,7 +102,7 @@ public final class NewsBroadcaster {
                     return;
                 }
 
-                String ticker = tickerFrame(cycle, frame, width);
+                String ticker = tickerFrame(cycle, frame, width, padCharacter);
                 if (config.actionBarEnabled()) {
                     Component actionBar = miniMessage.deserialize(format(config.actionBarFormat(), item, ticker));
                     for (Player player : Bukkit.getOnlinePlayers()) {
@@ -134,10 +135,76 @@ public final class NewsBroadcaster {
         return item.source() + " " + item.title() + " (" + DATE_FORMAT.format(item.publishedAt()) + ")";
     }
 
-    private String tickerFrame(String cycle, int frame, int width) {
-        int offset = frame % cycle.length();
-        int repeat = ((offset + width) / cycle.length()) + 2;
-        return cycle.repeat(repeat).substring(offset, offset + width);
+    private String tickerFrame(String cycle, int frame, int width, String padCharacter) {
+        int[] codePoints = cycle.codePoints().toArray();
+        int offset = frame % codePoints.length;
+        StringBuilder result = new StringBuilder();
+        int currentWidth = 0;
+        int index = offset;
+        while (currentWidth < width) {
+            int codePoint = codePoints[index];
+            int codePointWidth = displayWidth(codePoint);
+            if (currentWidth + codePointWidth > width) {
+                break;
+            }
+            result.appendCodePoint(codePoint);
+            currentWidth += codePointWidth;
+            index = (index + 1) % codePoints.length;
+        }
+        return padToWidth(result.toString(), width, padCharacter);
+    }
+
+    private String tickerPadCharacter() {
+        String value = config.tickerPadCharacter();
+        if (value == null || value.isEmpty()) {
+            return " ";
+        }
+        return new String(Character.toChars(value.codePointAt(0)));
+    }
+
+    private String pad(String padCharacter, int width) {
+        return padToWidth("", width, padCharacter);
+    }
+
+    private String padToWidth(String value, int width, String padCharacter) {
+        StringBuilder result = new StringBuilder(value);
+        int currentWidth = displayWidth(value);
+        int padWidth = Math.max(1, displayWidth(padCharacter));
+        while (currentWidth + padWidth <= width) {
+            result.append(padCharacter);
+            currentWidth += padWidth;
+        }
+        while (currentWidth < width) {
+            result.append(' ');
+            currentWidth++;
+        }
+        return result.toString();
+    }
+
+    private int displayWidth(String value) {
+        return value.codePoints()
+            .map(this::displayWidth)
+            .sum();
+    }
+
+    private int displayWidth(int codePoint) {
+        if (Character.isISOControl(codePoint)) {
+            return 0;
+        }
+        Character.UnicodeBlock block = Character.UnicodeBlock.of(codePoint);
+        if (block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+            || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+            || block == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B
+            || block == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
+            || block == Character.UnicodeBlock.HIRAGANA
+            || block == Character.UnicodeBlock.KATAKANA
+            || block == Character.UnicodeBlock.HANGUL_SYLLABLES
+            || block == Character.UnicodeBlock.HANGUL_JAMO
+            || block == Character.UnicodeBlock.HANGUL_COMPATIBILITY_JAMO
+            || block == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS) {
+            return 2;
+        }
+        return 1;
     }
 
     private void showBossBar(BossBar bossBar) {

@@ -153,22 +153,22 @@ storage:
 
 ## 通知表示
 
-通知は通常チャットに表示されます。必要に応じて、アクションバーやボスバーにも電光掲示板のような横スクロール表示を追加できます。アクションバーとボスバーは他プラグインと表示領域が競合しやすいため、既定では無効です。
+通知は既定でボスバーに表示されます。必要に応じて、通常チャットやアクションバーにも表示できます。アクションバーとボスバーは電光掲示板のように横スクロールします。
 
 ```yaml
 broadcast:
   chat:
-    enabled: true
+    enabled: false
 
   actionbar:
     enabled: false
     format: "{prefix} <yellow>{ticker}</yellow>"
 
   bossbar:
-    enabled: false
+    enabled: true
     format: "{prefix} <yellow>{ticker}</yellow>"
     color: "YELLOW"
-    overlay: "PROGRESS"
+    overlay: "NOTCHED_20"
     progress: 1.0
 
   ticker:
@@ -176,9 +176,10 @@ broadcast:
     interval-ticks: 4
     duration-seconds: 18
     separator: "   "
+    pad-character: " "
 ```
 
-`{ticker}` は `配信元 タイトル (日時)` のスクロール用テキストです。チャット用の `{source}`、`{title}`、`{date}` などもアクションバーとボスバーの `format` で利用できます。
+`{ticker}` は `配信元 タイトル (日時)` のスクロール用テキストです。`ticker.width` は表示幅で、日本語などの全角文字は広めに扱います。足りない幅は `pad-character` で埋めます。
 
 ## 外務省 海外安全情報
 

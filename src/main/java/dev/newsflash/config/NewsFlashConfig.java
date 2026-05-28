@@ -63,18 +63,19 @@ public record NewsFlashConfig(
                 config.getString("broadcast.prefix", "<red><bold>[NewsFlash]</bold></red>"),
                 config.getString("broadcast.format", "{prefix} <gold>{source}</gold> <yellow>{title}</yellow> <gray>({date})</gray> <aqua><click:open_url:'{url}'>{url}</click></aqua>"),
                 config.getBoolean("broadcast.console", true),
-                config.getBoolean("broadcast.chat.enabled", true),
+                config.getBoolean("broadcast.chat.enabled", false),
                 config.getBoolean("broadcast.actionbar.enabled", false),
                 config.getString("broadcast.actionbar.format", "{prefix} <yellow>{ticker}</yellow>"),
-                config.getBoolean("broadcast.bossbar.enabled", false),
+                config.getBoolean("broadcast.bossbar.enabled", true),
                 config.getString("broadcast.bossbar.format", "{prefix} <yellow>{ticker}</yellow>"),
                 config.getString("broadcast.bossbar.color", "YELLOW"),
-                config.getString("broadcast.bossbar.overlay", "PROGRESS"),
+                config.getString("broadcast.bossbar.overlay", "NOTCHED_20"),
                 clamp((float) config.getDouble("broadcast.bossbar.progress", 1.0D), 0.0F, 1.0F),
                 Math.max(8, config.getInt("broadcast.ticker.width", 48)),
                 Math.max(1, config.getInt("broadcast.ticker.interval-ticks", 4)),
                 Math.max(1, config.getInt("broadcast.ticker.duration-seconds", 18)),
-                config.getString("broadcast.ticker.separator", "   ")
+                config.getString("broadcast.ticker.separator", "   "),
+                config.getString("broadcast.ticker.pad-character", " ")
             )
         );
     }
