@@ -91,6 +91,14 @@ translation:
 |---|---|
 | `ja` | 日本語表示 |
 | `en` | 英語表示 |
+| `zh_CN` | 簡体字中国語ファイル |
+| `zh_TW` | 繁体字中国語ファイル |
+| `ko` | 韓国語ファイル |
+| `de` | ドイツ語ファイル |
+| `fr` | フランス語ファイル |
+| `es` | スペイン語ファイル |
+| `pt_BR` | ブラジルポルトガル語ファイル |
+| `ru` | ロシア語ファイル |
 
 翻訳対象は、P2P地震情報の通知ラベル、外務省の配信元名、コマンド応答など、プラグインが生成する文言です。RSS/Atomの記事タイトルや外務省データ本文など、配信元から取得した本文は原文のまま表示します。
 
@@ -99,9 +107,17 @@ translation:
 ```text
 plugins/NewsFlash/languages/ja.yml
 plugins/NewsFlash/languages/en.yml
+plugins/NewsFlash/languages/zh_CN.yml
+plugins/NewsFlash/languages/zh_TW.yml
+plugins/NewsFlash/languages/ko.yml
+plugins/NewsFlash/languages/de.yml
+plugins/NewsFlash/languages/fr.yml
+plugins/NewsFlash/languages/es.yml
+plugins/NewsFlash/languages/pt_BR.yml
+plugins/NewsFlash/languages/ru.yml
 ```
 
-文言を調整したい場合は、対象の言語ファイルを編集して `/newsflash reload` を実行してください。未定義のキーは同梱の日本語定義にフォールバックします。
+文言を調整したい場合は、対象の言語ファイルを編集して `/newsflash reload` を実行してください。`ja` の未定義キーは日本語に、それ以外の未定義キーは英語にフォールバックします。
 
 ## 外務省 海外安全情報
 

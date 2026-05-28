@@ -10,6 +10,19 @@ public record NewsFlashConfig(
     FilterConfig mofaFilterConfig,
     BroadcastConfig broadcastConfig
 ) {
+    private static final java.util.Set<String> SUPPORTED_LANGUAGES = java.util.Set.of(
+        "ja",
+        "en",
+        "zh_CN",
+        "zh_TW",
+        "ko",
+        "de",
+        "fr",
+        "es",
+        "pt_BR",
+        "ru"
+    );
+
     public static NewsFlashConfig from(FileConfiguration config) {
         return new NewsFlashConfig(
             normalizeLanguage(config.getString("translation.language", config.getString("language", "ja"))),
@@ -68,7 +81,12 @@ public record NewsFlashConfig(
         if (language == null) {
             return "ja";
         }
-        return language.equalsIgnoreCase("en") ? "en" : "ja";
+        for (String supportedLanguage : SUPPORTED_LANGUAGES) {
+            if (supportedLanguage.equalsIgnoreCase(language)) {
+                return supportedLanguage;
+            }
+        }
+        return "ja";
     }
 
     private static java.util.List<String> stringList(FileConfiguration config, String path, String fallbackPath) {

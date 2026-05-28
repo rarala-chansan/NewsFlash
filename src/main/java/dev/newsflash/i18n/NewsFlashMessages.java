@@ -2,12 +2,26 @@ package dev.newsflash.i18n;
 
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class NewsFlashMessages {
+    private static final Set<String> SUPPORTED_LANGUAGES = Set.of(
+        "ja",
+        "en",
+        "zh_CN",
+        "zh_TW",
+        "ko",
+        "de",
+        "fr",
+        "es",
+        "pt_BR",
+        "ru"
+    );
+
     private final YamlConfiguration messages;
     private final YamlConfiguration fallback;
 
@@ -18,10 +32,9 @@ public final class NewsFlashMessages {
 
     public static NewsFlashMessages load(JavaPlugin plugin, String language) {
         String normalized = normalizeLanguage(language);
-        ensureLanguageFile(plugin, "ja");
-        ensureLanguageFile(plugin, "en");
+        SUPPORTED_LANGUAGES.forEach(supportedLanguage -> ensureLanguageFile(plugin, supportedLanguage));
 
-        YamlConfiguration fallback = loadBundled(plugin, "ja");
+        YamlConfiguration fallback = loadBundled(plugin, normalized.equals("ja") ? "ja" : "en");
         YamlConfiguration selected = YamlConfiguration.loadConfiguration(plugin.getDataFolder().toPath()
             .resolve("languages")
             .resolve(normalized + ".yml")
@@ -212,7 +225,12 @@ public final class NewsFlashMessages {
         if (language == null) {
             return "ja";
         }
-        return language.equalsIgnoreCase("en") ? "en" : "ja";
+        for (String supportedLanguage : SUPPORTED_LANGUAGES) {
+            if (supportedLanguage.equalsIgnoreCase(language)) {
+                return supportedLanguage;
+            }
+        }
+        return "ja";
     }
 
     private static void ensureLanguageFile(JavaPlugin plugin, String language) {
