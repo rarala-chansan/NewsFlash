@@ -10,6 +10,7 @@ import dev.newsflash.config.P2pQuakeConfig;
 import dev.newsflash.i18n.NewsFlashMessages;
 import dev.newsflash.model.NewsItem;
 import java.net.URI;
+import java.net.http.HttpTimeoutException;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.time.Duration;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
@@ -82,7 +84,7 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
             .buildAsync(URI.create(config.websocketUrl()), this)
             .whenComplete((socket, throwable) -> {
                 if (throwable != null) {
-                    plugin.getLogger().log(Level.WARNING, "Failed to connect to P2PQuake WebSocket.", throwable);
+                    logConnectionFailure(throwable);
                     scheduleReconnect();
                     return;
                 }
@@ -117,7 +119,7 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
     @Override
     public void onError(WebSocket webSocket, Throwable error) {
         if (!stopping) {
-            plugin.getLogger().log(Level.WARNING, "P2PQuake WebSocket error.", error);
+            logConnectionFailure(error);
             scheduleReconnect();
         }
     }
@@ -348,12 +350,37 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
         if (stopping || reconnectTask != null) {
             return;
         }
+        plugin.getLogger().warning("P2PQuake WebSocket will reconnect in " + config.reconnectDelaySeconds() + " second(s).");
         reconnectTask = Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             reconnectTask = null;
             if (!stopping) {
                 connect();
             }
         }, config.reconnectDelaySeconds() * 20L);
+    }
+
+    private void logConnectionFailure(Throwable throwable) {
+        Throwable cause = unwrap(throwable);
+        String message = cause.getMessage() == null || cause.getMessage().isBlank()
+            ? cause.getClass().getSimpleName()
+            : cause.getMessage();
+        if (cause instanceof HttpTimeoutException) {
+            plugin.getLogger().warning("Failed to connect to P2PQuake WebSocket: timed out.");
+            return;
+        }
+        if (cause instanceof java.io.IOException) {
+            plugin.getLogger().warning("P2PQuake WebSocket connection failed: " + message);
+            return;
+        }
+        plugin.getLogger().log(Level.WARNING, "P2PQuake WebSocket error: " + message, cause);
+    }
+
+    private Throwable unwrap(Throwable throwable) {
+        Throwable current = throwable;
+        while ((current instanceof CompletionException || current instanceof java.util.concurrent.ExecutionException) && current.getCause() != null) {
+            current = current.getCause();
+        }
+        return current;
     }
 
     private boolean isSeen(String id) {
