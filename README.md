@@ -37,12 +37,12 @@ mvn package
 生成物:
 
 ```text
-target/NewsFlash-0.1.1.jar
+target/NewsFlash-0.1.2.jar
 ```
 
 ## 導入
 
-1. `target/NewsFlash-0.1.1.jar` をサーバーの `plugins/` フォルダへ配置します。
+1. `target/NewsFlash-0.1.2.jar` をサーバーの `plugins/` フォルダへ配置します。
 2. サーバーを起動します。
 3. 生成された `plugins/NewsFlash/config.yml` を必要に応じて編集します。
 4. 設定変更後は `/newsflash reload` を実行します。
