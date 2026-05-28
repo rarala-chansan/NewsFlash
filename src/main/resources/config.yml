@@ -12,6 +12,12 @@ translation:
   # 個人言語は plugins/NewsFlash/player-languages.yml に保存されます。
   # 速報通知本文はサーバーのデフォルト言語で生成されます。
 
+storage:
+  # プレイヤーごとの個人設定の保存方式です。
+  # yaml: plugins/NewsFlash/player-languages.yml に保存します。小〜中規模サーバー向けの既定値です。
+  # sqlite: plugins/NewsFlash/newsflash.db に保存します。将来、個人設定が増えた場合に向いています。
+  type: "yaml"
+
 mofa:
   # 日本固有寄りの情報ソースです。
   # 外務省が日本人向けに公開している海外安全情報を利用します。

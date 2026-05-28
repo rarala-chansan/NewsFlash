@@ -130,6 +130,24 @@ plugins/NewsFlash/languages/ru.yml
 
 個人言語は `plugins/NewsFlash/player-languages.yml` に保存されます。現時点で個人言語が反映されるのはコマンド応答です。速報通知本文は受信時に生成されるため、サーバーのデフォルト言語で配信されます。
 
+## ストレージ設定
+
+プレイヤーごとの個人設定は、YAMLまたはSQLiteに保存できます。既定はYAMLです。
+
+```yaml
+storage:
+  type: "yaml"
+```
+
+対応値:
+
+| 値 | 保存先 | 用途 |
+|---|---|---|
+| `yaml` | `plugins/NewsFlash/player-languages.yml` | 小〜中規模サーバー向けの既定値 |
+| `sqlite` | `plugins/NewsFlash/newsflash.db` | 個人設定が増えた場合やDB管理したい場合 |
+
+現在保存される個人設定は、プレイヤーごとの言語設定です。
+
 ## 外務省 海外安全情報
 
 外務省の「新着情報」軽量XMLを定期取得します。

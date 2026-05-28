@@ -5,6 +5,8 @@ import dev.newsflash.config.NewsFlashConfig;
 import dev.newsflash.i18n.LanguageRegistry;
 import dev.newsflash.i18n.NewsFlashMessages;
 import dev.newsflash.i18n.PlayerLanguageStore;
+import dev.newsflash.i18n.SqlitePlayerLanguageStore;
+import dev.newsflash.i18n.YamlPlayerLanguageStore;
 import dev.newsflash.provider.NewsProvider;
 import dev.newsflash.provider.mofa.MofaNewsProvider;
 import dev.newsflash.provider.p2pquake.P2pQuakeRealtimeProvider;
@@ -33,7 +35,6 @@ public final class NewsFlashPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        playerLanguageStore = new PlayerLanguageStore(getDataFolder().toPath(), getLogger());
         loadPlugin();
 
         PluginCommand command = getCommand("newsflash");
@@ -52,17 +53,20 @@ public final class NewsFlashPlugin extends JavaPlugin {
         if (p2pQuakeProvider != null) {
             p2pQuakeProvider.stop();
         }
+        if (playerLanguageStore != null) {
+            playerLanguageStore.close();
+        }
     }
 
     public void reloadPlugin() {
         reloadConfig();
-        playerLanguageStore.reload();
         loadPlugin();
     }
 
     public boolean reloadTarget(String target) {
         reloadConfig();
         pluginConfig = NewsFlashConfig.from(getConfig());
+        configurePlayerLanguageStore(pluginConfig);
         messageCache.clear();
         messages = messages(pluginConfig.language());
         broadcaster = new NewsBroadcaster(this, pluginConfig.broadcastConfig());
@@ -197,6 +201,7 @@ public final class NewsFlashPlugin extends JavaPlugin {
         }
 
         pluginConfig = NewsFlashConfig.from(getConfig());
+        configurePlayerLanguageStore(pluginConfig);
         messageCache.clear();
         messages = messages(pluginConfig.language());
         broadcaster = new NewsBroadcaster(this, pluginConfig.broadcastConfig());
@@ -231,5 +236,17 @@ public final class NewsFlashPlugin extends JavaPlugin {
 
     private void validateRssAsync(RssNewsProvider provider) {
         Bukkit.getScheduler().runTaskAsynchronously(this, provider::validateFeeds);
+    }
+
+    private void configurePlayerLanguageStore(NewsFlashConfig config) {
+        if (playerLanguageStore != null) {
+            playerLanguageStore.close();
+        }
+        if (config.storageType().equals("sqlite")) {
+            playerLanguageStore = new SqlitePlayerLanguageStore(getDataFolder().toPath(), getLogger());
+        } else {
+            playerLanguageStore = new YamlPlayerLanguageStore(getDataFolder().toPath(), getLogger());
+            playerLanguageStore.reload();
+        }
     }
 }

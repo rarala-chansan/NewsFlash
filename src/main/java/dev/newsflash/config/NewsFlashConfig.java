@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public record NewsFlashConfig(
     String language,
+    String storageType,
     MofaConfig mofaConfig,
     P2pQuakeConfig p2pQuakeConfig,
     RssConfig rssConfig,
@@ -14,6 +15,7 @@ public record NewsFlashConfig(
     public static NewsFlashConfig from(FileConfiguration config) {
         return new NewsFlashConfig(
             normalizeLanguage(config.getString("translation.language", config.getString("language", "ja"))),
+            normalizeStorageType(config.getString("storage.type", "yaml")),
             new MofaConfig(
                 config.getBoolean("mofa.enabled", true),
                 Math.max(0, config.getInt("mofa.initial-delay-seconds", 60)),
@@ -67,6 +69,13 @@ public record NewsFlashConfig(
 
     private static String normalizeLanguage(String language) {
         return LanguageRegistry.normalize(language);
+    }
+
+    private static String normalizeStorageType(String storageType) {
+        if (storageType == null) {
+            return "yaml";
+        }
+        return storageType.equalsIgnoreCase("sqlite") ? "sqlite" : "yaml";
     }
 
     private static java.util.List<String> stringList(FileConfiguration config, String path, String fallbackPath) {
