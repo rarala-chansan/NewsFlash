@@ -169,7 +169,7 @@ broadcast:
 
   bossbar:
     enabled: true
-    format: "{prefix} {ticker}"
+    format: "{prefix} <gray><bold>{ticker}</bold></gray>"
     color: "WHITE"
     overlay: "PROGRESS"
     progress: 1.0

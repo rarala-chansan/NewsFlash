@@ -210,7 +210,7 @@ broadcast:
     # Fixed prefix + scrolling ticker. Available colors: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE.
     # 固定接頭辞 + 横スクロール本文。色: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE。
     enabled: true
-    format: "{prefix} {ticker}"
+    format: "{prefix} <gray><bold>{ticker}</bold></gray>"
     color: "WHITE"
     overlay: "PROGRESS"
     progress: 1.0

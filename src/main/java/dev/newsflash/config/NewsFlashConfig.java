@@ -85,7 +85,7 @@ public record NewsFlashConfig(
                 config.getBoolean("broadcast.actionbar.enabled", false),
                 config.getString("broadcast.actionbar.format", "{prefix} {ticker}"),
                 config.getBoolean("broadcast.bossbar.enabled", true),
-                config.getString("broadcast.bossbar.format", "{prefix} {ticker}"),
+                config.getString("broadcast.bossbar.format", "{prefix} <gray><bold>{ticker}</bold></gray>"),
                 config.getString("broadcast.bossbar.color", "WHITE"),
                 config.getString("broadcast.bossbar.overlay", "PROGRESS"),
                 clamp((float) config.getDouble("broadcast.bossbar.progress", 1.0D), 0.0F, 1.0F),
