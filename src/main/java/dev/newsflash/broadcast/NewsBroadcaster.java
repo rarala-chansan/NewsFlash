@@ -165,9 +165,9 @@ public final class NewsBroadcaster {
 
     private Component discordComponent(String format, String author, String message) {
         return miniMessage.deserialize(format, TagResolver.resolver(
-            Placeholder.unparsed("author", author),
-            Placeholder.unparsed("message", message),
-            Placeholder.unparsed("ticker", message)
+            Placeholder.parsed("author", escape(author)),
+            Placeholder.parsed("message", escape(message)),
+            Placeholder.parsed("ticker", escape(message))
         ));
     }
 
