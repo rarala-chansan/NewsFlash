@@ -15,6 +15,7 @@ Paper 1.20.6 以降向けのニュース速報プラグインです。
 - 津波注意報・津波警報・大津波警報を通知
 - 緊急地震速報（警報）を通知
 - 任意のRSS/Atomフィードを設定して通知
+- Discordチャンネル投稿をMinecraftへ転送
 - チャット、アクションバー、ボスバーへの通知表示
 - 重複通知を防止
 - `/newsflash reload` による設定再読み込み
@@ -59,6 +60,7 @@ target/NewsFlash-0.1.2.jar
 /newsflash reload mofa
 /newsflash reload p2pquake
 /newsflash reload rss
+/newsflash reload discord
 /newsflash language
 /newsflash language list
 /newsflash language personal <language|default>
@@ -76,6 +78,7 @@ target/NewsFlash-0.1.2.jar
 | `/newsflash reload mofa` | 外務省データ設定だけ再読み込みします |
 | `/newsflash reload p2pquake` | P2P地震情報のWebSocketを再接続します |
 | `/newsflash reload rss` | RSS/Atom設定だけ再読み込みします |
+| `/newsflash reload discord` | Discord転送を再接続します |
 | `/newsflash language` | 現在のデフォルト言語と個人言語を表示します |
 | `/newsflash language list` | 対応言語を表示します |
 | `/newsflash language personal <language>` | 自分のコマンド応答言語を設定します |
@@ -296,6 +299,31 @@ rss:
 ```
 
 `filter.enabled: false` の場合はそのフィードを全件通知します。`true` にすると、そのフィードの `title + description` に `keywords` のいずれかが含まれる記事だけを通知できます。
+
+## Discord転送
+
+Discord Botで指定チャンネルの投稿を受け取り、Minecraftへ転送できます。デフォルトでは無効です。Bot Token は公開リポジトリに入れず、サーバー側の `config.yml` にだけ設定してください。Discord Developer Portal で `MESSAGE CONTENT INTENT` を有効にする必要があります。
+
+```yaml
+discord:
+  enabled: false
+  token: ""
+  channel-ids:
+    # - "123456789012345678"
+
+  max-message-length: 120
+  max-messages-per-minute: 5
+  ignore-bots: true
+  strip-mentions: true
+  strip-markdown: true
+
+  format: "<blue><bold>[Discord]</bold></blue> <gray><author></gray>: <white><message></white>"
+
+  broadcast:
+    chat: true
+    actionbar: false
+    bossbar: false
+```
 
 ## データソース
 

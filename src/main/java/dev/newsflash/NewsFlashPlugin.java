@@ -9,6 +9,7 @@ import dev.newsflash.i18n.SqlitePlayerLanguageStore;
 import dev.newsflash.i18n.YamlPlayerLanguageStore;
 import dev.newsflash.model.NewsItem;
 import dev.newsflash.provider.NewsProvider;
+import dev.newsflash.provider.discord.DiscordRelay;
 import dev.newsflash.provider.mofa.MofaNewsProvider;
 import dev.newsflash.provider.p2pquake.P2pQuakeRealtimeProvider;
 import dev.newsflash.provider.rss.RssNewsProvider;
@@ -32,6 +33,7 @@ public final class NewsFlashPlugin extends JavaPlugin {
     private final Map<String, NewsFlashMessages> messageCache = new HashMap<>();
     private NewsScheduler scheduler;
     private P2pQuakeRealtimeProvider p2pQuakeProvider;
+    private DiscordRelay discordRelay;
     private List<NewsProvider> providers;
 
     @Override
@@ -54,6 +56,9 @@ public final class NewsFlashPlugin extends JavaPlugin {
         }
         if (p2pQuakeProvider != null) {
             p2pQuakeProvider.stop();
+        }
+        if (discordRelay != null) {
+            discordRelay.stop();
         }
         if (broadcaster != null) {
             broadcaster.close();
@@ -111,6 +116,15 @@ public final class NewsFlashPlugin extends JavaPlugin {
             }
             p2pQuakeProvider = new P2pQuakeRealtimeProvider(this, pluginConfig.p2pQuakeConfig(), broadcaster, messages);
             p2pQuakeProvider.start();
+            return true;
+        }
+
+        if (target.equalsIgnoreCase("discord")) {
+            if (discordRelay != null) {
+                discordRelay.stop();
+            }
+            discordRelay = new DiscordRelay(this, pluginConfig.discordConfig(), broadcaster);
+            discordRelay.start();
             return true;
         }
 
@@ -223,6 +237,10 @@ public final class NewsFlashPlugin extends JavaPlugin {
             p2pQuakeProvider.stop();
             p2pQuakeProvider = null;
         }
+        if (discordRelay != null) {
+            discordRelay.stop();
+            discordRelay = null;
+        }
         if (broadcaster != null) {
             broadcaster.close();
         }
@@ -237,6 +255,8 @@ public final class NewsFlashPlugin extends JavaPlugin {
         scheduler.start();
         p2pQuakeProvider = new P2pQuakeRealtimeProvider(this, pluginConfig.p2pQuakeConfig(), broadcaster, messages);
         p2pQuakeProvider.start();
+        discordRelay = new DiscordRelay(this, pluginConfig.discordConfig(), broadcaster);
+        discordRelay.start();
 
         getLogger().info("NewsFlash enabled with " + providers.size() + " polling provider(s).");
     }

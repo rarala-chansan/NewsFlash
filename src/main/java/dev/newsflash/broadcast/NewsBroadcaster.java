@@ -11,6 +11,8 @@ import java.util.Locale;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -47,6 +49,26 @@ public final class NewsBroadcaster {
                     + (item.matchedKeyword().isBlank() ? "" : " matched by '" + item.matchedKeyword() + "'")
                     + ": " + item.title() + " " + item.url());
             }
+        }
+    }
+
+    public void broadcastDiscord(String format, String author, String message, boolean chat, boolean actionBar, boolean bossBar) {
+        Component component = miniMessage.deserialize(format, TagResolver.resolver(
+            Placeholder.parsed("author", escape(author)),
+            Placeholder.parsed("message", escape(message))
+        ));
+        if (chat) {
+            Bukkit.getServer().sendMessage(component);
+        }
+        if (actionBar) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.sendActionBar(component);
+            }
+        }
+        if (bossBar) {
+            BossBar bossBarMessage = BossBar.bossBar(component, config.bossBarProgress(), bossBarColor(), bossBarOverlay());
+            showBossBar(bossBarMessage);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> hideBossBar(bossBarMessage), config.tickerDurationSeconds() * 20L);
         }
     }
 

@@ -8,6 +8,7 @@ public record NewsFlashConfig(
     String storageType,
     MofaConfig mofaConfig,
     P2pQuakeConfig p2pQuakeConfig,
+    DiscordConfig discordConfig,
     RssConfig rssConfig,
     FilterConfig mofaFilterConfig,
     BroadcastConfig broadcastConfig
@@ -42,6 +43,23 @@ public record NewsFlashConfig(
                 config.getBoolean("p2pquake.eew.enabled", true),
                 config.getBoolean("p2pquake.eew.include-tests", false),
                 Math.max(100, config.getInt("p2pquake.seen-history-limit", 1000))
+            ),
+            new DiscordConfig(
+                config.getBoolean("discord.enabled", false),
+                config.getString("discord.token", ""),
+                config.getStringList("discord.channel-ids").stream()
+                    .map(String::trim)
+                    .filter(channelId -> !channelId.isBlank())
+                    .toList(),
+                Math.max(1, config.getInt("discord.max-message-length", 120)),
+                Math.max(1, config.getInt("discord.max-messages-per-minute", 5)),
+                config.getBoolean("discord.ignore-bots", true),
+                config.getBoolean("discord.strip-mentions", true),
+                config.getBoolean("discord.strip-markdown", true),
+                config.getBoolean("discord.broadcast.chat", true),
+                config.getBoolean("discord.broadcast.actionbar", false),
+                config.getBoolean("discord.broadcast.bossbar", false),
+                config.getString("discord.format", "<blue><bold>[Discord]</bold></blue> <gray>{author}</gray>: <white>{message}</white>")
             ),
             new RssConfig(
                 config.getBoolean("rss.enabled", false),

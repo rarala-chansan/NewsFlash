@@ -155,6 +155,33 @@ rss:
     #       - "地震"
     #       - "警報"
 
+discord:
+  # Discord -> Minecraft relay. Requires a bot token and MESSAGE CONTENT INTENT.
+  # Discord投稿をMinecraftへ転送します。Bot Token と MESSAGE CONTENT INTENT が必要です。
+  enabled: false
+  token: ""
+  channel-ids:
+    # - "123456789012345678"
+
+  # Safety limits for readout.
+  # 読み上げの安全制限。
+  max-message-length: 120
+  max-messages-per-minute: 5
+  ignore-bots: true
+  strip-mentions: true
+  strip-markdown: true
+
+  # Discord relay format. Placeholders: <author>, <message>
+  # Discord転送形式。置換: <author>, <message>
+  format: "<blue><bold>[Discord]</bold></blue> <gray><author></gray>: <white><message></white>"
+
+  broadcast:
+    # Discord messages use their own destinations.
+    # Discord転送専用の表示先です。
+    chat: true
+    actionbar: false
+    bossbar: false
+
 broadcast:
   # Prefix. MiniMessage is supported.
   # 接頭辞。MiniMessage対応。
