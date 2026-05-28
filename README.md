@@ -167,8 +167,8 @@ broadcast:
   bossbar:
     enabled: true
     format: "{prefix} <yellow>{ticker}</yellow>"
-    color: "YELLOW"
-    overlay: "NOTCHED_20"
+    color: "WHITE"
+    overlay: "PROGRESS"
     progress: 1.0
 
   ticker:
@@ -179,7 +179,7 @@ broadcast:
     pad-character: " "
 ```
 
-`{ticker}` は `配信元 タイトル (日時)` のスクロール用テキストです。`ticker.width` は表示幅で、日本語などの全角文字は広めに扱います。足りない幅は `pad-character` で埋めます。
+`{prefix}` は固定表示、`{ticker}` は横スクロール本文です。`ticker.width` は表示幅で、日本語などの全角文字は広めに扱います。足りない幅は `pad-character` で埋めます。
 
 ## 外務省 海外安全情報
 

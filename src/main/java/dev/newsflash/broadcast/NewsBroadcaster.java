@@ -223,7 +223,7 @@ public final class NewsBroadcaster {
         try {
             return BossBar.Color.valueOf(config.bossBarColor().toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException exception) {
-            return BossBar.Color.YELLOW;
+            return BossBar.Color.WHITE;
         }
     }
 

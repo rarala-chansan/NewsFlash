@@ -174,18 +174,18 @@ broadcast:
     enabled: false
 
   actionbar:
-    # Scrolling actionbar ticker.
-    # アクションバーの横スクロール通知。
+    # Fixed prefix + scrolling ticker.
+    # 固定接頭辞 + 横スクロール本文。
     enabled: false
     format: "{prefix} <yellow>{ticker}</yellow>"
 
   bossbar:
-    # Scrolling bossbar ticker. color/overlay use Adventure names.
-    # ボスバーの横スクロール通知。color/overlay は Adventure 名です。
+    # Fixed prefix + scrolling ticker. Available colors: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE.
+    # 固定接頭辞 + 横スクロール本文。色: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE。
     enabled: true
     format: "{prefix} <yellow>{ticker}</yellow>"
-    color: "YELLOW"
-    overlay: "NOTCHED_20"
+    color: "WHITE"
+    overlay: "PROGRESS"
     progress: 1.0
 
   ticker:
