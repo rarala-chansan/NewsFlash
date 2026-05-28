@@ -3,6 +3,7 @@ package dev.newsflash.config;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public record NewsFlashConfig(
+    String language,
     MofaConfig mofaConfig,
     P2pQuakeConfig p2pQuakeConfig,
     RssConfig rssConfig,
@@ -11,6 +12,7 @@ public record NewsFlashConfig(
 ) {
     public static NewsFlashConfig from(FileConfiguration config) {
         return new NewsFlashConfig(
+            normalizeLanguage(config.getString("translation.language", config.getString("language", "ja"))),
             new MofaConfig(
                 config.getBoolean("mofa.enabled", true),
                 Math.max(0, config.getInt("mofa.initial-delay-seconds", 60)),
@@ -60,6 +62,13 @@ public record NewsFlashConfig(
                 config.getBoolean("broadcast.console", true)
             )
         );
+    }
+
+    private static String normalizeLanguage(String language) {
+        if (language == null) {
+            return "ja";
+        }
+        return language.equalsIgnoreCase("en") ? "en" : "ja";
     }
 
     private static java.util.List<String> stringList(FileConfiguration config, String path, String fallbackPath) {

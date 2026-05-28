@@ -1,6 +1,7 @@
 package dev.newsflash.provider.mofa;
 
 import dev.newsflash.config.MofaConfig;
+import dev.newsflash.i18n.NewsFlashMessages;
 import dev.newsflash.config.FilterConfig;
 import dev.newsflash.model.NewsItem;
 import dev.newsflash.provider.NewsProvider;
@@ -35,15 +36,17 @@ public final class MofaNewsProvider implements NewsProvider {
     private final FilterConfig filterConfig;
     private final Path seenFile;
     private final Logger logger;
+    private final NewsFlashMessages messages;
     private final HttpClient client;
     private final Set<String> seenIds;
     private boolean initialized;
 
-    public MofaNewsProvider(MofaConfig config, FilterConfig filterConfig, Path dataFolder, Logger logger) {
+    public MofaNewsProvider(MofaConfig config, FilterConfig filterConfig, Path dataFolder, Logger logger, NewsFlashMessages messages) {
         this.config = config;
         this.filterConfig = filterConfig;
         this.seenFile = dataFolder.resolve("mofa-seen.txt");
         this.logger = logger;
+        this.messages = messages;
         this.client = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(config.timeoutSeconds()))
             .build();
@@ -58,7 +61,7 @@ public final class MofaNewsProvider implements NewsProvider {
 
     @Override
     public String name() {
-        return "MOFA Overseas Safety";
+        return messages.mofaSource();
     }
 
     @Override
@@ -131,7 +134,7 @@ public final class MofaNewsProvider implements NewsProvider {
 
             items.add(new NewsItem(
                 keyCd,
-                "外務省 海外安全情報",
+                messages.mofaSource(),
                 text(mail, "infoNameLong", text(mail, "infoName", text(mail, "infoType"))),
                 text(mail, "title"),
                 text(mail, "lead"),

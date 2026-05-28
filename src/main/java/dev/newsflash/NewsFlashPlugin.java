@@ -2,6 +2,7 @@ package dev.newsflash;
 
 import dev.newsflash.broadcast.NewsBroadcaster;
 import dev.newsflash.config.NewsFlashConfig;
+import dev.newsflash.i18n.NewsFlashMessages;
 import dev.newsflash.provider.NewsProvider;
 import dev.newsflash.provider.mofa.MofaNewsProvider;
 import dev.newsflash.provider.p2pquake.P2pQuakeRealtimeProvider;
@@ -16,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class NewsFlashPlugin extends JavaPlugin {
     private NewsFlashConfig pluginConfig;
     private NewsBroadcaster broadcaster;
+    private NewsFlashMessages messages;
     private NewsScheduler scheduler;
     private P2pQuakeRealtimeProvider p2pQuakeProvider;
     private List<NewsProvider> providers;
@@ -51,12 +53,13 @@ public final class NewsFlashPlugin extends JavaPlugin {
     public boolean reloadTarget(String target) {
         reloadConfig();
         pluginConfig = NewsFlashConfig.from(getConfig());
+        messages = new NewsFlashMessages(pluginConfig.language());
         broadcaster = new NewsBroadcaster(this, pluginConfig.broadcastConfig());
         scheduler.broadcaster(broadcaster);
 
         if (target.equalsIgnoreCase("mofa")) {
             if (pluginConfig.mofaConfig().enabled()) {
-                scheduler.replaceProvider(new MofaNewsProvider(pluginConfig.mofaConfig(), pluginConfig.mofaFilterConfig(), getDataFolder().toPath(), getLogger()));
+                scheduler.replaceProvider(new MofaNewsProvider(pluginConfig.mofaConfig(), pluginConfig.mofaFilterConfig(), getDataFolder().toPath(), getLogger(), messages));
             } else {
                 scheduler.removeProvider("mofa");
             }
@@ -83,7 +86,7 @@ public final class NewsFlashPlugin extends JavaPlugin {
             if (p2pQuakeProvider != null) {
                 p2pQuakeProvider.stop();
             }
-            p2pQuakeProvider = new P2pQuakeRealtimeProvider(this, pluginConfig.p2pQuakeConfig(), broadcaster);
+            p2pQuakeProvider = new P2pQuakeRealtimeProvider(this, pluginConfig.p2pQuakeConfig(), broadcaster, messages);
             p2pQuakeProvider.start();
             return true;
         }
@@ -117,6 +120,10 @@ public final class NewsFlashPlugin extends JavaPlugin {
         return pluginConfig;
     }
 
+    public NewsFlashMessages messages() {
+        return messages;
+    }
+
     public List<NewsProvider> providers() {
         return providers;
     }
@@ -131,11 +138,12 @@ public final class NewsFlashPlugin extends JavaPlugin {
         }
 
         pluginConfig = NewsFlashConfig.from(getConfig());
+        messages = new NewsFlashMessages(pluginConfig.language());
         broadcaster = new NewsBroadcaster(this, pluginConfig.broadcastConfig());
         providers = createProviders(pluginConfig);
         scheduler = new NewsScheduler(this, providers, broadcaster);
         scheduler.start();
-        p2pQuakeProvider = new P2pQuakeRealtimeProvider(this, pluginConfig.p2pQuakeConfig(), broadcaster);
+        p2pQuakeProvider = new P2pQuakeRealtimeProvider(this, pluginConfig.p2pQuakeConfig(), broadcaster, messages);
         p2pQuakeProvider.start();
 
         getLogger().info("NewsFlash enabled with " + providers.size() + " polling provider(s).");
@@ -144,7 +152,7 @@ public final class NewsFlashPlugin extends JavaPlugin {
     private List<NewsProvider> createProviders(NewsFlashConfig config) {
         List<NewsProvider> result = new ArrayList<>();
         if (config.mofaConfig().enabled()) {
-            result.add(new MofaNewsProvider(config.mofaConfig(), config.mofaFilterConfig(), getDataFolder().toPath(), getLogger()));
+            result.add(new MofaNewsProvider(config.mofaConfig(), config.mofaFilterConfig(), getDataFolder().toPath(), getLogger(), messages));
         }
         if (config.rssConfig().enabled()) {
             if (config.rssConfig().feeds().isEmpty()) {

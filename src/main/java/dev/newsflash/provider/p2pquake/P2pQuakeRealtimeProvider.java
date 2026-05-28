@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import dev.newsflash.NewsFlashPlugin;
 import dev.newsflash.broadcast.NewsBroadcaster;
 import dev.newsflash.config.P2pQuakeConfig;
+import dev.newsflash.i18n.NewsFlashMessages;
 import dev.newsflash.model.NewsItem;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -35,6 +36,7 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
     private final NewsFlashPlugin plugin;
     private final P2pQuakeConfig config;
     private final NewsBroadcaster broadcaster;
+    private final NewsFlashMessages messages;
     private final HttpClient client;
     private final Queue<String> seenIds = new ArrayDeque<>();
     private final Set<String> seenIdSet = new java.util.HashSet<>();
@@ -43,10 +45,11 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
     private BukkitTask reconnectTask;
     private volatile boolean stopping;
 
-    public P2pQuakeRealtimeProvider(NewsFlashPlugin plugin, P2pQuakeConfig config, NewsBroadcaster broadcaster) {
+    public P2pQuakeRealtimeProvider(NewsFlashPlugin plugin, P2pQuakeConfig config, NewsBroadcaster broadcaster, NewsFlashMessages messages) {
         this.plugin = plugin;
         this.config = config;
         this.broadcaster = broadcaster;
+        this.messages = messages;
         this.client = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(15))
             .build();
@@ -193,7 +196,7 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
             }
             strongestGrade = strongerTsunamiGrade(strongestGrade, grade);
             if (targets.size() < 8) {
-                targets.add(tsunamiGradeLabel(grade) + " " + stringValue(area, "name", "地域不明"));
+                targets.add(tsunamiGradeLabel(grade) + " " + stringValue(area, "name", messages.unknownArea()));
             }
         }
 
@@ -201,13 +204,13 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
             return null;
         }
 
-        String title = "津波情報: " + tsunamiGradeLabel(strongestGrade);
-        String lead = "対象地域: " + String.join(", ", targets);
+        String title = messages.tsunamiTitle(tsunamiGradeLabel(strongestGrade));
+        String lead = messages.targetAreas(targets);
 
         return new NewsItem(
             stringValue(root, "id", ""),
-            "P2P地震情報",
-            "津波予報",
+            messages.p2pSource(),
+            messages.tsunamiType(),
             title,
             lead,
             "https://www.p2pquake.net/",
@@ -231,29 +234,31 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
 
         JsonObject earthquake = objectValue(root, "earthquake");
         JsonObject hypocenter = earthquake == null ? null : objectValue(earthquake, "hypocenter");
-        String hypocenterName = hypocenter == null ? "震源不明" : stringValue(hypocenter, "name", "震源不明");
+        String hypocenterName = hypocenter == null ? messages.unknownHypocenter() : stringValue(hypocenter, "name", messages.unknownHypocenter());
         double magnitude = hypocenter == null ? -1.0 : doubleValue(hypocenter, "magnitude", -1.0);
         int depth = hypocenter == null ? -1 : (int) doubleValue(hypocenter, "depth", -1.0);
         JsonObject issue = objectValue(root, "issue");
-        String serial = issue == null ? "不明" : stringValue(issue, "serial", "不明");
+        String serial = issue == null ? messages.unknown() : stringValue(issue, "serial", messages.unknown());
 
         EewAreaSummary areaSummary = eewAreaSummary(root);
-        String title = "緊急地震速報（警報）: " + hypocenterName;
-        String lead = "第" + serial + "報"
-            + " / 最大予測震度" + scaleLabel(areaSummary.maxScale())
-            + " / M" + (magnitude < 0 ? "不明" : String.format("%.1f", magnitude))
-            + " / 深さ" + (depth < 0 ? "不明" : depth + "km")
-            + areaSummary.text();
+        String title = messages.eewTitle(hypocenterName);
+        String lead = messages.eewLead(
+            serial,
+            scaleLabel(areaSummary.maxScale()),
+            magnitude < 0 ? messages.unknown() : String.format("%.1f", magnitude),
+            messages.depth(depth),
+            areaSummary.text()
+        );
 
         return new NewsItem(
             stringValue(root, "id", ""),
-            "P2P地震情報",
-            "緊急地震速報",
+            messages.p2pSource(),
+            messages.eewType(),
             title,
             lead,
             "https://www.p2pquake.net/",
             parseTime(stringValue(root, "time", "")),
-            "緊急地震速報"
+            messages.eewType()
         );
     }
 
@@ -279,7 +284,7 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
                 }
                 targetMaxScale = Math.max(targetMaxScale, scale);
                 if (scale >= config.minScale() && matchedAreas.size() < 5) {
-                    matchedAreas.add(pref + " " + stringValue(point, "addr", "") + " 震度" + scaleLabel(scale));
+                    matchedAreas.add(messages.areaScale(pref, stringValue(point, "addr", ""), scaleLabel(scale)));
                 }
             }
         }
@@ -296,22 +301,24 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
 
     private NewsItem toQuakeNewsItem(JsonObject root, JsonObject earthquake, QuakeMatch match) {
         JsonObject hypocenter = objectValue(earthquake, "hypocenter");
-        String hypocenterName = hypocenter == null ? "震源不明" : stringValue(hypocenter, "name", "震源不明");
+        String hypocenterName = hypocenter == null ? messages.unknownHypocenter() : stringValue(hypocenter, "name", messages.unknownHypocenter());
         double magnitude = hypocenter == null ? -1.0 : doubleValue(hypocenter, "magnitude", -1.0);
         int depth = hypocenter == null ? -1 : intValue(hypocenter, "depth", -1);
         String tsunami = stringValue(earthquake, "domesticTsunami", "Unknown");
 
-        String title = "地震情報: 最大震度" + scaleLabel(match.nationwideMaxScale()) + " " + hypocenterName;
-        String lead = "発生時刻: " + stringValue(earthquake, "time", "不明")
-            + " / M" + (magnitude < 0 ? "不明" : String.format("%.1f", magnitude))
-            + " / 深さ" + (depth < 0 ? "不明" : depth + "km")
-            + " / 津波: " + tsunamiLabel(tsunami)
-            + targetAreaText(match);
+        String title = messages.quakeTitle(scaleLabel(match.nationwideMaxScale()), hypocenterName);
+        String lead = messages.quakeLead(
+            stringValue(earthquake, "time", messages.unknown()),
+            magnitude < 0 ? messages.unknown() : String.format("%.1f", magnitude),
+            messages.depth(depth),
+            tsunamiLabel(tsunami),
+            targetAreaText(match)
+        );
 
         return new NewsItem(
             stringValue(root, "id", ""),
-            "P2P地震情報",
-            "地震情報",
+            messages.p2pSource(),
+            messages.quakeType(),
             title,
             lead,
             "https://www.p2pquake.net/",
@@ -325,16 +332,16 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
             return "";
         }
         if (match.matchedAreas().isEmpty()) {
-            return " / 対象地域最大震度: " + scaleLabel(match.targetMaxScale());
+            return messages.targetAreaText(scaleLabel(match.targetMaxScale()));
         }
-        return " / 対象地域: " + String.join(", ", match.matchedAreas());
+        return messages.targetAreaText(match.matchedAreas());
     }
 
     private String matchedKeyword(QuakeMatch match) {
         if (!config.targetPrefecturesEnabled() || config.targetPrefectures().isEmpty()) {
-            return "最大震度" + scaleLabel(match.nationwideMaxScale());
+            return messages.matchedMaxScale(scaleLabel(match.nationwideMaxScale()));
         }
-        return "対象地域最大震度" + scaleLabel(match.targetMaxScale());
+        return messages.matchedTargetMaxScale(scaleLabel(match.targetMaxScale()));
     }
 
     private void scheduleReconnect() {
@@ -380,31 +387,11 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
     }
 
     private String scaleLabel(int scale) {
-        return switch (scale) {
-            case 10 -> "1";
-            case 20 -> "2";
-            case 30 -> "3";
-            case 40 -> "4";
-            case 45 -> "5弱";
-            case 46 -> "5弱以上";
-            case 50 -> "5強";
-            case 55 -> "6弱";
-            case 60 -> "6強";
-            case 70 -> "7";
-            case 99 -> "程度以上";
-            default -> "不明";
-        };
+        return messages.scaleLabel(scale);
     }
 
     private String tsunamiLabel(String tsunami) {
-        return switch (tsunami) {
-            case "None" -> "なし";
-            case "Checking" -> "調査中";
-            case "NonEffective" -> "若干の海面変動";
-            case "Watch" -> "津波注意報";
-            case "Warning" -> "津波警報";
-            default -> "不明";
-        };
+        return messages.tsunamiLabel(tsunami);
     }
 
     private boolean isTsunamiWarningGrade(String grade) {
@@ -428,12 +415,7 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
     }
 
     private String tsunamiGradeLabel(String grade) {
-        return switch (grade) {
-            case "MajorWarning" -> "大津波警報";
-            case "Warning" -> "津波警報";
-            case "Watch" -> "津波注意報";
-            default -> "津波情報";
-        };
+        return messages.tsunamiGradeLabel(grade);
     }
 
     private EewAreaSummary eewAreaSummary(JsonObject root) {
@@ -454,14 +436,14 @@ public final class P2pQuakeRealtimeProvider implements WebSocket.Listener {
             int areaScale = Math.max(scaleFrom, scaleTo);
             maxScale = Math.max(maxScale, areaScale);
             if (targets.size() < 8) {
-                targets.add(stringValue(area, "pref", "") + " " + stringValue(area, "name", "") + " 震度" + scaleLabel(areaScale));
+                targets.add(messages.areaScale(stringValue(area, "pref", ""), stringValue(area, "name", ""), scaleLabel(areaScale)));
             }
         }
 
         if (targets.isEmpty()) {
             return new EewAreaSummary(maxScale, "");
         }
-        return new EewAreaSummary(maxScale, " / 対象地域: " + String.join(", ", targets));
+        return new EewAreaSummary(maxScale, messages.targetAreaText(targets));
     }
 
     private JsonObject objectValue(JsonObject object, String key) {

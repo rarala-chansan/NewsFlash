@@ -21,45 +21,44 @@ public final class NewsFlashCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0 || args[0].equalsIgnoreCase("status")) {
-            sender.sendMessage("NewsFlash providers: " + plugin.providers().size());
-            plugin.providers().forEach(provider -> sender.sendMessage("- " + provider.name() + ": first check after " + provider.initialDelaySeconds() + " second(s), then every " + provider.pollIntervalMinutes() + " minute(s)"));
-            sender.sendMessage("- P2P地震情報: " + (plugin.pluginConfig().p2pQuakeConfig().enabled() ? "enabled" : "disabled")
-                + ", earthquake min scale " + plugin.pluginConfig().p2pQuakeConfig().minScale()
-                + ", tsunami " + (plugin.pluginConfig().p2pQuakeConfig().tsunamiEnabled() ? "enabled" : "disabled")
-                + ", eew " + (plugin.pluginConfig().p2pQuakeConfig().eewEnabled() ? "enabled" : "disabled"));
-            sender.sendMessage("- RSS/Atom: " + (plugin.pluginConfig().rssConfig().enabled() ? "enabled" : "disabled")
-                + ", feeds " + plugin.pluginConfig().rssConfig().feeds().size());
-            plugin.pluginConfig().rssConfig().feeds().forEach(feed -> sender.sendMessage("  - " + feed.id()
-                + ": " + (feed.enabled() ? "enabled" : "disabled")
-                + ", filter " + (feed.filterConfig().enabled() ? "enabled" : "disabled")));
+            sender.sendMessage(plugin.messages().providerCount(plugin.providers().size()));
+            plugin.providers().forEach(provider -> sender.sendMessage(plugin.messages().providerSchedule(provider.name(), provider.initialDelaySeconds(), provider.pollIntervalMinutes())));
+            sender.sendMessage(plugin.messages().p2pStatus(
+                plugin.pluginConfig().p2pQuakeConfig().enabled(),
+                plugin.pluginConfig().p2pQuakeConfig().minScale(),
+                plugin.pluginConfig().p2pQuakeConfig().tsunamiEnabled(),
+                plugin.pluginConfig().p2pQuakeConfig().eewEnabled()
+            ));
+            sender.sendMessage(plugin.messages().rssStatus(plugin.pluginConfig().rssConfig().enabled(), plugin.pluginConfig().rssConfig().feeds().size()));
+            plugin.pluginConfig().rssConfig().feeds().forEach(feed -> sender.sendMessage(plugin.messages().rssFeedStatus(feed.id(), feed.enabled(), feed.filterConfig().enabled())));
             return true;
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
             if (args.length == 1) {
                 plugin.reloadPlugin();
-                sender.sendMessage("NewsFlash reloaded.");
+                sender.sendMessage(plugin.messages().reloaded());
                 return true;
             }
             if (plugin.reloadTarget(args[1])) {
-                sender.sendMessage("NewsFlash reloaded: " + args[1]);
+                sender.sendMessage(plugin.messages().reloaded(args[1]));
                 return true;
             }
-            sender.sendMessage("Unknown NewsFlash reload target: " + args[1]);
+            sender.sendMessage(plugin.messages().unknownReloadTarget(args[1]));
             return true;
         }
 
         if (args[0].equalsIgnoreCase("check")) {
             if (args.length == 1) {
                 plugin.runManualCheck();
-                sender.sendMessage("NewsFlash check started.");
+                sender.sendMessage(plugin.messages().checkStarted());
                 return true;
             }
             if (plugin.runManualCheck(args[1])) {
-                sender.sendMessage("NewsFlash check started: " + args[1]);
+                sender.sendMessage(plugin.messages().checkStarted(args[1]));
                 return true;
             }
-            sender.sendMessage("Unknown or unsupported NewsFlash check target: " + args[1]);
+            sender.sendMessage(plugin.messages().unknownCheckTarget(args[1]));
             return true;
         }
 
