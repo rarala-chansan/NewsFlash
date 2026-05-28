@@ -21,6 +21,14 @@ commands:
   check-started: "NewsFlash 檢查已開始。"
   check-started-target: "NewsFlash 檢查已開始: {target}"
   unknown-check-target: "未知或不支援的 NewsFlash 檢查目標: {target}"
+  language-current: "預設語言: {default} / 個人語言: {personal}"
+  language-default-changed: "預設語言已變更為 {language}。"
+  language-personal-changed: "個人語言已變更為 {language}。"
+  language-personal-cleared: "個人語言已清除；將使用預設語言。"
+  language-console-personal-unsupported: "個人語言只能由玩家設定。"
+  language-unknown: "不支援的語言: {language} / 支援的語言: {languages}"
+  language-list: "支援的語言: {languages}"
+  no-permission: "你沒有權限執行此命令。"
 
 sources:
   mofa: "MOFA 海外安全資訊"

@@ -21,6 +21,14 @@ commands:
   check-started: "La vérification NewsFlash a démarré."
   check-started-target: "La vérification NewsFlash a démarré : {target}"
   unknown-check-target: "Cible de vérification NewsFlash inconnue ou non prise en charge : {target}"
+  language-current: "Langue par défaut : {default} / Langue personnelle : {personal}"
+  language-default-changed: "Langue par défaut changée en {language}."
+  language-personal-changed: "Langue personnelle changée en {language}."
+  language-personal-cleared: "Langue personnelle effacée ; la langue par défaut sera utilisée."
+  language-console-personal-unsupported: "La langue personnelle ne peut être définie que par un joueur."
+  language-unknown: "Langue non prise en charge : {language} / Langues prises en charge : {languages}"
+  language-list: "Langues prises en charge : {languages}"
+  no-permission: "Vous n'avez pas la permission d'exécuter cette commande."
 
 sources:
   mofa: "Informations de sécurité à l’étranger du MOFA"

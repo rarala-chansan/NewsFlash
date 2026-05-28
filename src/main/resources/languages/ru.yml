@@ -21,6 +21,14 @@ commands:
   check-started: "Проверка NewsFlash запущена."
   check-started-target: "Проверка NewsFlash запущена: {target}"
   unknown-check-target: "Неизвестная или неподдерживаемая цель проверки NewsFlash: {target}"
+  language-current: "Язык по умолчанию: {default} / Личный язык: {personal}"
+  language-default-changed: "Язык по умолчанию изменён на {language}."
+  language-personal-changed: "Личный язык изменён на {language}."
+  language-personal-cleared: "Личный язык сброшен; используется язык по умолчанию."
+  language-console-personal-unsupported: "Личный язык может задать только игрок."
+  language-unknown: "Неподдерживаемый язык: {language} / Поддерживаемые языки: {languages}"
+  language-list: "Поддерживаемые языки: {languages}"
+  no-permission: "У вас нет разрешения на выполнение этой команды."
 
 sources:
   mofa: "Информация MOFA о безопасности за рубежом"

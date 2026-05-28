@@ -17,6 +17,14 @@ commands:
   check-started: "NewsFlash-Prüfung wurde gestartet."
   check-started-target: "NewsFlash-Prüfung wurde gestartet: {target}"
   unknown-check-target: "Unbekanntes oder nicht unterstütztes check-Ziel: {target}"
+  language-current: "Standardsprache: {default} / Persönliche Sprache: {personal}"
+  language-default-changed: "Standardsprache wurde auf {language} geändert."
+  language-personal-changed: "Persönliche Sprache wurde auf {language} geändert."
+  language-personal-cleared: "Persönliche Sprache wurde gelöscht; die Standardsprache wird verwendet."
+  language-console-personal-unsupported: "Die persönliche Sprache kann nur von einem Spieler festgelegt werden."
+  language-unknown: "Nicht unterstützte Sprache: {language} / Unterstützte Sprachen: {languages}"
+  language-list: "Unterstützte Sprachen: {languages}"
+  no-permission: "Du hast keine Berechtigung, diesen Befehl auszuführen."
 
 # Übersetzungsschlüssel mit starkem Bezug zu Japan:
 sources:

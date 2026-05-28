@@ -21,6 +21,14 @@ commands:
   check-started: "NewsFlash 확인을 시작했습니다."
   check-started-target: "NewsFlash 확인을 시작했습니다: {target}"
   unknown-check-target: "알 수 없거나 지원되지 않는 NewsFlash 확인 대상입니다: {target}"
+  language-current: "기본 언어: {default} / 개인 언어: {personal}"
+  language-default-changed: "기본 언어를 {language}(으)로 변경했습니다."
+  language-personal-changed: "개인 언어를 {language}(으)로 변경했습니다."
+  language-personal-cleared: "개인 언어를 해제했습니다. 기본 언어를 사용합니다."
+  language-console-personal-unsupported: "개인 언어는 플레이어만 설정할 수 있습니다."
+  language-unknown: "지원되지 않는 언어입니다: {language} / 지원 언어: {languages}"
+  language-list: "지원 언어: {languages}"
+  no-permission: "이 명령을 실행할 권한이 없습니다."
 
 sources:
   mofa: "MOFA 해외 안전 정보"

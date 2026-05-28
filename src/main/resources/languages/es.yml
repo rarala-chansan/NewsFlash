@@ -21,6 +21,14 @@ commands:
   check-started: "Comprobación de NewsFlash iniciada."
   check-started-target: "Comprobación de NewsFlash iniciada: {target}"
   unknown-check-target: "Destino de comprobación desconocido o no compatible: {target}"
+  language-current: "Idioma predeterminado: {default} / Idioma personal: {personal}"
+  language-default-changed: "Idioma predeterminado cambiado a {language}."
+  language-personal-changed: "Idioma personal cambiado a {language}."
+  language-personal-cleared: "Idioma personal eliminado; se usará el idioma predeterminado."
+  language-console-personal-unsupported: "El idioma personal solo puede configurarlo un jugador."
+  language-unknown: "Idioma no compatible: {language} / Idiomas compatibles: {languages}"
+  language-list: "Idiomas compatibles: {languages}"
+  no-permission: "No tienes permiso para ejecutar este comando."
 
 sources:
   mofa: "Seguridad en el extranjero de MOFA"
