@@ -179,8 +179,8 @@ discord:
     # Discord messages use their own destinations.
     # Discord転送専用の表示先です。
     chat: false
-    actionbar: true
-    bossbar: false
+    actionbar: false
+    bossbar: true
 
 broadcast:
   # Prefix. MiniMessage is supported.

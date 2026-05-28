@@ -57,8 +57,8 @@ public record NewsFlashConfig(
                 config.getBoolean("discord.strip-mentions", true),
                 config.getBoolean("discord.strip-markdown", true),
                 config.getBoolean("discord.broadcast.chat", false),
-                config.getBoolean("discord.broadcast.actionbar", true),
-                config.getBoolean("discord.broadcast.bossbar", false),
+                config.getBoolean("discord.broadcast.actionbar", false),
+                config.getBoolean("discord.broadcast.bossbar", true),
                 config.getString("discord.format", "<blue><bold>[Discord]</bold></blue> <aqua><author></aqua>: <gray><bold><message></bold></gray>")
             ),
             new RssConfig(

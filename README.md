@@ -321,8 +321,8 @@ discord:
 
   broadcast:
     chat: false
-    actionbar: true
-    bossbar: false
+    actionbar: false
+    bossbar: true
 ```
 
 `broadcast.chat` は固定表示です。`broadcast.actionbar` または `broadcast.bossbar` を有効にすると、通常通知と同じティッカー設定で本文が横スクロールします。
