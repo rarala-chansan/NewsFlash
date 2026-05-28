@@ -82,6 +82,10 @@ public final class NewsFlashMessages {
         return format("commands.unknown-check-target", Map.of("target", target));
     }
 
+    public String broadcastExampleSent() {
+        return text("commands.broadcast-example-sent");
+    }
+
     public String languageCurrent(String defaultLanguage, String personalLanguage) {
         return format("commands.language-current", Map.of("default", defaultLanguage, "personal", personalLanguage));
     }

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class NewsFlashCommand implements CommandExecutor, TabCompleter {
-    private static final List<String> SUBCOMMANDS = List.of("reload", "check", "status", "language");
+    private static final List<String> SUBCOMMANDS = List.of("reload", "check", "broadcast", "status", "language");
     private static final List<String> TARGETS = List.of("mofa", "p2pquake", "rss");
     private static final List<String> LANGUAGE_TARGETS = List.of("default", "personal", "list");
     private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
@@ -72,6 +72,18 @@ public final class NewsFlashCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
             send(sender, plugin.messages(sender).unknownCheckTarget(args[1]));
+            return true;
+        }
+
+        if (args[0].equalsIgnoreCase("broadcast")) {
+            if (!requireAdmin(sender)) {
+                return true;
+            }
+            String title = args.length >= 2
+                ? String.join(" ", java.util.Arrays.copyOfRange(args, 1, args.length))
+                : "";
+            plugin.broadcastExample(title);
+            send(sender, plugin.messages(sender).broadcastExampleSent());
             return true;
         }
 

@@ -7,7 +7,7 @@ description: Real-time safety alerts for Minecraft server chat.
 commands:
   newsflash:
     description: Manage NewsFlash.
-    usage: /newsflash <reload|check|status|language> [mofa|p2pquake|rss]
+    usage: /newsflash <reload|check|broadcast|status|language> [mofa|p2pquake|rss]
 permissions:
   newsflash.admin:
     description: Allows managing NewsFlash.

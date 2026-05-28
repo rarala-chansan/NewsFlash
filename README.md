@@ -54,6 +54,7 @@ target/NewsFlash-0.1.1.jar
 /newsflash check
 /newsflash check mofa
 /newsflash check rss
+/newsflash broadcast [title]
 /newsflash reload
 /newsflash reload mofa
 /newsflash reload p2pquake
@@ -70,6 +71,7 @@ target/NewsFlash-0.1.1.jar
 | `/newsflash check` | 定期取得型の取得元を即時チェックします |
 | `/newsflash check mofa` | 外務省データを即時チェックします |
 | `/newsflash check rss` | RSS/Atomを即時チェックします |
+| `/newsflash broadcast [title]` | 表示確認用のサンプル通知を実際に配信します |
 | `/newsflash reload` | `config.yml` 全体を再読み込みします |
 | `/newsflash reload mofa` | 外務省データ設定だけ再読み込みします |
 | `/newsflash reload p2pquake` | P2P地震情報のWebSocketを再接続します |

@@ -21,6 +21,7 @@ commands:
   check-started: "&aNewsFlash check started."
   check-started-target: "&aNewsFlash check started: &6{target}&a"
   unknown-check-target: "&cUnknown or unsupported NewsFlash check target: &6{target}&c"
+  broadcast-example-sent: "&aExample notification broadcasted."
   language-current: "&bDefault language: &6{default}&b / Personal language: &6{personal}&b"
   language-default-changed: "&aDefault language changed to &6{language}&a."
   language-personal-changed: "&aPersonal language changed to &6{language}&a."

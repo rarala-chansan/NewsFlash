@@ -7,10 +7,12 @@ import dev.newsflash.i18n.NewsFlashMessages;
 import dev.newsflash.i18n.PlayerLanguageStore;
 import dev.newsflash.i18n.SqlitePlayerLanguageStore;
 import dev.newsflash.i18n.YamlPlayerLanguageStore;
+import dev.newsflash.model.NewsItem;
 import dev.newsflash.provider.NewsProvider;
 import dev.newsflash.provider.mofa.MofaNewsProvider;
 import dev.newsflash.provider.p2pquake.P2pQuakeRealtimeProvider;
 import dev.newsflash.provider.rss.RssNewsProvider;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -135,6 +137,22 @@ public final class NewsFlashPlugin extends JavaPlugin {
             return scheduler.runNow("rss", false);
         }
         return false;
+    }
+
+    public void broadcastExample(String title) {
+        String normalizedTitle = title == null || title.isBlank()
+            ? "日本株がバブルを超えて過去最高値を更新"
+            : title;
+        broadcaster.broadcast(List.of(new NewsItem(
+            "example-" + Instant.now().toEpochMilli(),
+            "白玉News",
+            "サンプル",
+            normalizedTitle,
+            "NewsFlash の表示確認用サンプル通知です。",
+            "https://example.com/newsflash",
+            Instant.now(),
+            "example"
+        )));
     }
 
     public NewsFlashConfig pluginConfig() {
