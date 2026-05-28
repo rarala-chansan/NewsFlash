@@ -90,7 +90,7 @@ public final class NewsBroadcaster {
 
     private void enqueueDiscordTicker(String format, String author, String message, boolean actionBar, boolean bossBar) {
         tickerQueue.addLast(new TickerEntry(
-            author + ": " + message,
+            message,
             actionBar,
             bossBar,
             ticker -> discordComponent(format, author, ticker),
