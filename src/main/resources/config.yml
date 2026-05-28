@@ -178,8 +178,8 @@ discord:
   broadcast:
     # Discord messages use their own destinations.
     # Discord転送専用の表示先です。
-    chat: true
-    actionbar: false
+    chat: false
+    actionbar: true
     bossbar: false
 
 broadcast:

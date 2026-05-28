@@ -320,8 +320,8 @@ discord:
   format: "<blue><bold>[Discord]</bold></blue> <gray><author></gray>: <white><message></white>"
 
   broadcast:
-    chat: true
-    actionbar: false
+    chat: false
+    actionbar: true
     bossbar: false
 ```
 
