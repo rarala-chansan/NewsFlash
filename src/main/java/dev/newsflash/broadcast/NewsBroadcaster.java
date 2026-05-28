@@ -8,6 +8,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -26,7 +27,7 @@ public final class NewsBroadcaster {
     private final Plugin plugin;
     private final BroadcastConfig config;
     private final MiniMessage miniMessage;
-    private final Deque<NewsItem> tickerQueue = new ArrayDeque<>();
+    private final Deque<TickerEntry> tickerQueue = new ArrayDeque<>();
     private BukkitTask tickerTask;
     private BossBar activeBossBar;
 
@@ -53,22 +54,12 @@ public final class NewsBroadcaster {
     }
 
     public void broadcastDiscord(String format, String author, String message, boolean chat, boolean actionBar, boolean bossBar) {
-        Component component = miniMessage.deserialize(format, TagResolver.resolver(
-            Placeholder.parsed("author", escape(author)),
-            Placeholder.parsed("message", escape(message))
-        ));
+        Component component = discordComponent(format, author, message);
         if (chat) {
             Bukkit.getServer().sendMessage(component);
         }
-        if (actionBar) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                player.sendActionBar(component);
-            }
-        }
-        if (bossBar) {
-            BossBar bossBarMessage = BossBar.bossBar(component, config.bossBarProgress(), bossBarColor(), bossBarOverlay());
-            showBossBar(bossBarMessage);
-            Bukkit.getScheduler().runTaskLater(plugin, () -> hideBossBar(bossBarMessage), config.tickerDurationSeconds() * 20L);
+        if (actionBar || bossBar) {
+            enqueueDiscordTicker(format, author, message, actionBar, bossBar);
         }
     }
 
@@ -85,15 +76,34 @@ public final class NewsBroadcaster {
     }
 
     private void enqueueTicker(NewsItem item) {
-        tickerQueue.addLast(item);
+        tickerQueue.addLast(new TickerEntry(
+            tickerText(item),
+            config.actionBarEnabled(),
+            config.bossBarEnabled(),
+            ticker -> miniMessage.deserialize(format(config.actionBarFormat(), item, ticker)),
+            ticker -> miniMessage.deserialize(format(config.bossBarFormat(), item, ticker))
+        ));
+        if (tickerTask == null || tickerTask.isCancelled()) {
+            playNextTicker();
+        }
+    }
+
+    private void enqueueDiscordTicker(String format, String author, String message, boolean actionBar, boolean bossBar) {
+        tickerQueue.addLast(new TickerEntry(
+            author + ": " + message,
+            actionBar,
+            bossBar,
+            ticker -> discordComponent(format, author, ticker),
+            ticker -> discordComponent(format, author, ticker)
+        ));
         if (tickerTask == null || tickerTask.isCancelled()) {
             playNextTicker();
         }
     }
 
     private void playNextTicker() {
-        NewsItem item = tickerQueue.pollFirst();
-        if (item == null) {
+        TickerEntry entry = tickerQueue.pollFirst();
+        if (entry == null) {
             tickerTask = null;
             return;
         }
@@ -102,8 +112,8 @@ public final class NewsBroadcaster {
         int intervalTicks = config.tickerIntervalTicks();
         int totalFrames = Math.max(1, config.tickerDurationSeconds() * 20 / intervalTicks);
         String padCharacter = tickerPadCharacter();
-        String cycle = pad(padCharacter, width) + tickerText(item) + config.tickerSeparator();
-        if (config.bossBarEnabled()) {
+        String cycle = pad(padCharacter, width) + entry.tickerText() + config.tickerSeparator();
+        if (entry.bossBar()) {
             activeBossBar = BossBar.bossBar(Component.empty(), config.bossBarProgress(), bossBarColor(), bossBarOverlay());
             showBossBar(activeBossBar);
         }
@@ -125,14 +135,14 @@ public final class NewsBroadcaster {
                 }
 
                 String ticker = tickerFrame(cycle, frame, width, padCharacter);
-                if (config.actionBarEnabled()) {
-                    Component actionBar = miniMessage.deserialize(format(config.actionBarFormat(), item, ticker));
+                if (entry.actionBar()) {
+                    Component actionBar = entry.actionBarComponent().apply(ticker);
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         player.sendActionBar(actionBar);
                     }
                 }
                 if (activeBossBar != null) {
-                    activeBossBar.name(miniMessage.deserialize(format(config.bossBarFormat(), item, ticker)));
+                    activeBossBar.name(entry.bossBarComponent().apply(ticker));
                 }
                 frame++;
             }
@@ -151,6 +161,14 @@ public final class NewsBroadcaster {
             .replace("{date}", DATE_FORMAT.format(item.publishedAt()))
             .replace("{url}", escapeUrl(item.url()))
             .replace("{ticker}", escape(ticker));
+    }
+
+    private Component discordComponent(String format, String author, String message) {
+        return miniMessage.deserialize(format, TagResolver.resolver(
+            Placeholder.unparsed("author", author),
+            Placeholder.unparsed("message", message),
+            Placeholder.unparsed("ticker", message)
+        ));
     }
 
     private String tickerText(NewsItem item) {
@@ -273,5 +291,14 @@ public final class NewsBroadcaster {
             return "https://www.anzen.mofa.go.jp/";
         }
         return value.replace("'", "%27").replace(" ", "%20");
+    }
+
+    private record TickerEntry(
+        String tickerText,
+        boolean actionBar,
+        boolean bossBar,
+        Function<String, Component> actionBarComponent,
+        Function<String, Component> bossBarComponent
+    ) {
     }
 }

@@ -325,6 +325,8 @@ discord:
     bossbar: false
 ```
 
+`broadcast.chat` は固定表示です。`broadcast.actionbar` または `broadcast.bossbar` を有効にすると、通常通知と同じティッカー設定で本文が横スクロールします。
+
 ## データソース
 
 - 外務省 海外安全情報オープンデータ: `https://www.ezairyu.mofa.go.jp/opendata/area/newarrivalL.xml`
