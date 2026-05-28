@@ -145,7 +145,7 @@ public final class NewsFlashPlugin extends JavaPlugin {
             : title;
         broadcaster.broadcast(List.of(new NewsItem(
             "example-" + Instant.now().toEpochMilli(),
-            "白玉News",
+            "Example News",
             "サンプル",
             normalizedTitle,
             "NewsFlash の表示確認用サンプル通知です。",
