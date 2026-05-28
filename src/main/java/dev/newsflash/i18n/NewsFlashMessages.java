@@ -82,6 +82,14 @@ public final class NewsFlashMessages {
         return format("commands.unknown-check-target", Map.of("target", target));
     }
 
+    public String checkFinished(String provider, int count) {
+        return format("commands.check-finished", Map.of("provider", provider, "count", count));
+    }
+
+    public String checkFailed(String provider, String error) {
+        return format("commands.check-failed", Map.of("provider", provider, "error", error));
+    }
+
     public String broadcastExampleSent() {
         return text("commands.broadcast-example-sent");
     }

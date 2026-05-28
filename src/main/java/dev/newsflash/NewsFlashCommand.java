@@ -63,11 +63,15 @@ public final class NewsFlashCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
             if (args.length == 1) {
-                plugin.runManualCheck();
+                plugin.runManualCheck(result -> send(sender, result.success()
+                    ? plugin.messages(sender).checkFinished(result.providerName(), result.itemCount())
+                    : plugin.messages(sender).checkFailed(result.providerName(), result.error())));
                 send(sender, plugin.messages(sender).checkStarted());
                 return true;
             }
-            if (plugin.runManualCheck(args[1])) {
+            if (plugin.runManualCheck(args[1], result -> send(sender, result.success()
+                ? plugin.messages(sender).checkFinished(result.providerName(), result.itemCount())
+                : plugin.messages(sender).checkFailed(result.providerName(), result.error())))) {
                 send(sender, plugin.messages(sender).checkStarted(args[1]));
                 return true;
             }

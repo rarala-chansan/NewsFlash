@@ -17,6 +17,8 @@ commands:
   check-started: "&aNewsFlash の確認を開始しました。"
   check-started-target: "&aNewsFlash の確認を開始しました: &6{target}&a"
   unknown-check-target: "&c不明または未対応の check 対象です: &6{target}&c"
+  check-finished: "&a{provider} の確認が完了しました。新着 &6{count}&a 件。"
+  check-failed: "&c{provider} の確認に失敗しました: &6{error}&c"
   broadcast-example-sent: "&aサンプル通知を送信しました。"
   language-current: "&bデフォルト言語: &6{default}&b / 個人言語: &6{personal}&b"
   language-default-changed: "&aデフォルト言語を &6{language}&a に変更しました。"

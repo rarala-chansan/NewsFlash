@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
@@ -42,15 +43,23 @@ public final class NewsScheduler {
     }
 
     public void runNow(boolean suppressInitialBroadcast) {
+        runNow(suppressInitialBroadcast, null);
+    }
+
+    public void runNow(boolean suppressInitialBroadcast, Consumer<CheckResult> callback) {
         for (NewsProvider provider : providers) {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> poll(provider, suppressInitialBroadcast));
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> poll(provider, suppressInitialBroadcast, callback));
         }
     }
 
     public boolean runNow(String providerId, boolean suppressInitialBroadcast) {
+        return runNow(providerId, suppressInitialBroadcast, null);
+    }
+
+    public boolean runNow(String providerId, boolean suppressInitialBroadcast, Consumer<CheckResult> callback) {
         for (NewsProvider provider : providers) {
             if (provider.id().equalsIgnoreCase(providerId)) {
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> poll(provider, suppressInitialBroadcast));
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> poll(provider, suppressInitialBroadcast, callback));
                 return true;
             }
         }
@@ -82,22 +91,44 @@ public final class NewsScheduler {
     private void startProvider(NewsProvider provider) {
         long initialDelayTicks = Math.max(0L, provider.initialDelaySeconds()) * TICKS_PER_SECOND;
         long intervalTicks = Math.max(1L, provider.pollIntervalMinutes()) * TICKS_PER_MINUTE;
-        tasks.put(provider.id().toLowerCase(), Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> poll(provider, true), initialDelayTicks, intervalTicks));
+        tasks.put(provider.id().toLowerCase(), Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> poll(provider, true, null), initialDelayTicks, intervalTicks));
     }
 
-    private void poll(NewsProvider provider, boolean allowInitialSuppress) {
+    private void poll(NewsProvider provider, boolean allowInitialSuppress, Consumer<CheckResult> callback) {
         try {
             List<NewsItem> items = provider.fetchNewItems(allowInitialSuppress);
             if (items.isEmpty()) {
+                complete(callback, new CheckResult(provider.id(), provider.name(), 0, true, ""));
                 return;
             }
 
             List<NewsItem> ordered = items.stream()
                 .sorted(Comparator.comparing(NewsItem::publishedAt))
                 .toList();
-            Bukkit.getScheduler().runTask(plugin, () -> broadcaster.broadcast(ordered));
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                broadcaster.broadcast(ordered);
+                if (callback != null) {
+                    callback.accept(new CheckResult(provider.id(), provider.name(), ordered.size(), true, ""));
+                }
+            });
         } catch (Exception exception) {
             plugin.getLogger().log(Level.WARNING, "Failed to poll " + provider.name() + ".", exception);
+            complete(callback, new CheckResult(provider.id(), provider.name(), 0, false, exception.getMessage() == null ? exception.getClass().getSimpleName() : exception.getMessage()));
         }
+    }
+
+    private void complete(Consumer<CheckResult> callback, CheckResult result) {
+        if (callback != null) {
+            Bukkit.getScheduler().runTask(plugin, () -> callback.accept(result));
+        }
+    }
+
+    public record CheckResult(
+        String providerId,
+        String providerName,
+        int itemCount,
+        boolean success,
+        String error
+    ) {
     }
 }

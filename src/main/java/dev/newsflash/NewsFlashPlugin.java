@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -132,23 +133,31 @@ public final class NewsFlashPlugin extends JavaPlugin {
     }
 
     public void runManualCheck() {
+        runManualCheck((Consumer<NewsScheduler.CheckResult>) null);
+    }
+
+    public void runManualCheck(Consumer<NewsScheduler.CheckResult> callback) {
         if (scheduler == null) {
             getLogger().warning("News scheduler is not initialized.");
             return;
         }
-        scheduler.runNow(false);
+        scheduler.runNow(false, callback);
     }
 
     public boolean runManualCheck(String target) {
+        return runManualCheck(target, null);
+    }
+
+    public boolean runManualCheck(String target, Consumer<NewsScheduler.CheckResult> callback) {
         if (scheduler == null) {
             getLogger().warning("News scheduler is not initialized.");
             return false;
         }
         if (target.equalsIgnoreCase("mofa")) {
-            return scheduler.runNow("mofa", false);
+            return scheduler.runNow("mofa", false, callback);
         }
         if (target.equalsIgnoreCase("rss")) {
-            return scheduler.runNow("rss", false);
+            return scheduler.runNow("rss", false, callback);
         }
         return false;
     }
