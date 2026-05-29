@@ -11,6 +11,114 @@ storage:
   # 個人設定の保存方式: yaml または sqlite。
   type: "yaml"
 
+broadcast:
+  # Prefix. MiniMessage is supported.
+  # 接頭辞。MiniMessage対応。
+  prefix: "<aqua><bold>[NewsFlash]</bold></aqua>"
+
+  # Chat format. Placeholders: {prefix}, {source}, {type}, {title}, {lead}, {keyword}, {date}, {url}
+  # チャット形式。置換: {prefix}, {source}, {type}, {title}, {lead}, {keyword}, {date}, {url}
+  format: "{prefix} <gold>{source}</gold> <yellow>{title}</yellow> <gray>({date})</gray> <aqua><click:open_url:'{url}'>{url}</click></aqua>"
+
+  # Also log broadcasts to console.
+  # 通知をコンソールにも出力。
+  console: true
+
+  chat:
+    # Send normal chat messages.
+    # 通常チャットへ通知。
+    enabled: false
+
+  actionbar:
+    # Fixed prefix + scrolling ticker.
+    # 固定接頭辞 + 横スクロール本文。
+    enabled: false
+    format: "{prefix} {ticker}"
+
+  bossbar:
+    # Fixed prefix + scrolling ticker. Available colors: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE.
+    # 固定接頭辞 + 横スクロール本文。色: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE。
+    enabled: true
+    format: "{prefix} <gray><bold>{ticker}</bold></gray>"
+    color: "WHITE"
+    overlay: "PROGRESS"
+    progress: 1.0
+
+  ticker:
+    # Shared ticker settings. speed-ticks: smaller is faster. 20 ticks = 1 second.
+    # 共通スクロール設定。speed-ticks は小さいほど速いです。20 ticks = 1秒。
+    width: 48
+    speed-ticks: 4
+    duration-seconds: 18
+    separator: "   "
+    pad-character: " "
+
+discord:
+  # Discord -> Minecraft relay. Requires a bot token and MESSAGE CONTENT INTENT.
+  # Discord投稿をMinecraftへ転送します。Bot Token と MESSAGE CONTENT INTENT が必要です。
+  enabled: false
+  token: ""
+  channel-ids:
+    # - "123456789012345678"
+
+  # Safety limits for readout.
+  # 読み上げの安全制限。
+  max-message-length: 120
+  max-messages-per-minute: 5
+  ignore-bots: true
+  strip-mentions: true
+  strip-markdown: true
+
+  # Discord relay format. Placeholders: <author>, <message>
+  # Discord転送形式。置換: <author>, <message>
+  format: "<blue><bold>[Discord]</bold></blue> <aqua><author></aqua>: <gray><bold><message></bold></gray>"
+
+  broadcast:
+    # Discord messages use their own destinations.
+    # Discord転送専用の表示先です。
+    chat: false
+    actionbar: false
+    bossbar: true
+
+rss:
+  # Custom RSS/Atom feeds. Disabled by default because source terms differ.
+  # 任意のRSS/Atom。配信元の規約が異なるためデフォルト無効です。
+  enabled: false
+
+  # First fetch delay after startup, in seconds.
+  # 起動後、初回取得までの秒数。
+  initial-delay-seconds: 60
+
+  # Fetch interval in minutes.
+  # 取得間隔（分）。
+  poll-interval-minutes: 10
+
+  # Network timeout in seconds.
+  # 通信タイムアウト（秒）。
+  timeout-seconds: 15
+
+  # Max items to broadcast per fetch.
+  # 1回の取得で通知する最大件数。
+  max-broadcast-per-poll: 5
+
+  # Max seen IDs to keep.
+  # 既読IDの保持上限。
+  seen-history-limit: 1000
+
+  feeds:
+    # Add your own feed URLs. filter.enabled=false broadcasts all new items.
+    # URLは各自で設定してください。filter.enabled=false なら新着を全件通知。
+    #
+    # - id: "example"
+    #   name: "Example News"
+    #   url: "https://example.com/rss.xml"
+    #   enabled: true
+    #   filter:
+    #     enabled: false
+    #     keywords:
+    #       - "地震"
+    #       - "警報"
+
 mofa:
   # MOFA Overseas Safety open data. Mainly for Japanese users.
   # 外務省 海外安全情報オープンデータ。主に日本人向けです。
@@ -115,111 +223,3 @@ p2pquake:
     # Broadcast test messages.
     # テスト配信も通知します。
     include-tests: false
-
-rss:
-  # Custom RSS/Atom feeds. Disabled by default because source terms differ.
-  # 任意のRSS/Atom。配信元の規約が異なるためデフォルト無効です。
-  enabled: false
-
-  # First fetch delay after startup, in seconds.
-  # 起動後、初回取得までの秒数。
-  initial-delay-seconds: 60
-
-  # Fetch interval in minutes.
-  # 取得間隔（分）。
-  poll-interval-minutes: 10
-
-  # Network timeout in seconds.
-  # 通信タイムアウト（秒）。
-  timeout-seconds: 15
-
-  # Max items to broadcast per fetch.
-  # 1回の取得で通知する最大件数。
-  max-broadcast-per-poll: 5
-
-  # Max seen IDs to keep.
-  # 既読IDの保持上限。
-  seen-history-limit: 1000
-
-  feeds:
-    # Add your own feed URLs. filter.enabled=false broadcasts all new items.
-    # URLは各自で設定してください。filter.enabled=false なら新着を全件通知。
-    #
-    # - id: "example"
-    #   name: "Example News"
-    #   url: "https://example.com/rss.xml"
-    #   enabled: true
-    #   filter:
-    #     enabled: false
-    #     keywords:
-    #       - "地震"
-    #       - "警報"
-
-discord:
-  # Discord -> Minecraft relay. Requires a bot token and MESSAGE CONTENT INTENT.
-  # Discord投稿をMinecraftへ転送します。Bot Token と MESSAGE CONTENT INTENT が必要です。
-  enabled: false
-  token: ""
-  channel-ids:
-    # - "123456789012345678"
-
-  # Safety limits for readout.
-  # 読み上げの安全制限。
-  max-message-length: 120
-  max-messages-per-minute: 5
-  ignore-bots: true
-  strip-mentions: true
-  strip-markdown: true
-
-  # Discord relay format. Placeholders: <author>, <message>
-  # Discord転送形式。置換: <author>, <message>
-  format: "<blue><bold>[Discord]</bold></blue> <aqua><author></aqua>: <gray><bold><message></bold></gray>"
-
-  broadcast:
-    # Discord messages use their own destinations.
-    # Discord転送専用の表示先です。
-    chat: false
-    actionbar: false
-    bossbar: true
-
-broadcast:
-  # Prefix. MiniMessage is supported.
-  # 接頭辞。MiniMessage対応。
-  prefix: "<aqua><bold>[NewsFlash]</bold></aqua>"
-
-  # Chat format. Placeholders: {prefix}, {source}, {type}, {title}, {lead}, {keyword}, {date}, {url}
-  # チャット形式。置換: {prefix}, {source}, {type}, {title}, {lead}, {keyword}, {date}, {url}
-  format: "{prefix} <gold>{source}</gold> <yellow>{title}</yellow> <gray>({date})</gray> <aqua><click:open_url:'{url}'>{url}</click></aqua>"
-
-  # Also log broadcasts to console.
-  # 通知をコンソールにも出力。
-  console: true
-
-  chat:
-    # Send normal chat messages.
-    # 通常チャットへ通知。
-    enabled: false
-
-  actionbar:
-    # Fixed prefix + scrolling ticker.
-    # 固定接頭辞 + 横スクロール本文。
-    enabled: false
-    format: "{prefix} {ticker}"
-
-  bossbar:
-    # Fixed prefix + scrolling ticker. Available colors: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE.
-    # 固定接頭辞 + 横スクロール本文。色: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE。
-    enabled: true
-    format: "{prefix} <gray><bold>{ticker}</bold></gray>"
-    color: "WHITE"
-    overlay: "PROGRESS"
-    progress: 1.0
-
-  ticker:
-    # Shared ticker settings. speed-ticks: smaller is faster. 20 ticks = 1 second.
-    # 共通スクロール設定。speed-ticks は小さいほど速いです。20 ticks = 1秒。
-    width: 48
-    speed-ticks: 4
-    duration-seconds: 18
-    separator: "   "
-    pad-character: " "
